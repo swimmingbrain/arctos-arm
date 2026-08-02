@@ -1,0 +1,27 @@
+# virtual environment
+.venv/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# tests and tools
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# editors and os
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# local config with real ports and offsets
+config/offsets.yaml
