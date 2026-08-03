@@ -33,3 +33,22 @@ SET_HOME_PARAMS = 0x90
 GO_HOME = 0x91
 SET_ZERO = 0x92
 SET_LIMIT_REMAP = 0x9E  # second limit switch on the 42D (EN and DIR pins)
+
+# motion
+QUERY_STATUS = 0xF1  # 0 error, 1 stopped, 2 accelerating, 3 decelerating, 4 full speed, 5 homing
+ENABLE = 0xF3
+MOVE_REL = 0xF4  # relative, in encoder counts
+MOVE_ABS = 0xF5  # absolute, in encoder counts
+SPEED_MODE = 0xF6
+STOP = 0xF7  # emergency stop
+
+# status byte in the reply to a motion command
+RUN_FAIL = 0
+RUN_STARTING = 1
+RUN_COMPLETE = 2
+RUN_END_LIMIT = 3
+
+WORK_MODE_VFOC = 2  # cr_vfoc: factory default, pulse/direction, CAN motion commands are ignored
+WORK_MODE_SR_VFOC = 5  # sr_vfoc: serial (CAN) control, this is what the library needs
+MAX_SPEED = 3000
+MAX_ACC = 255
