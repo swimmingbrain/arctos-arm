@@ -67,3 +67,20 @@ def frame(can_id: int, data: list[int]) -> list[int]:
 def check(can_id: int, data: list[int]) -> bool:
     """Is the checksum of a reply correct?"""
     return len(data) >= 2 and crc(can_id, data[:-1]) == data[-1]
+
+
+def to_int24(value: int) -> list[int]:
+    """Signed 24 bit number, most significant byte first."""
+    v = value & 0xFFFFFF
+    return [(v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF]
+
+
+def to_uint16(value: int) -> list[int]:
+    if not 0 <= value <= 0xFFFF:
+        raise ValueError(f"value {value} does not fit in 16 bit")
+    return [(value >> 8) & 0xFF, value & 0xFF]
+
+
+def from_int48(data: list[int]) -> int:
+    """Six bytes to a signed integer."""
+    return int.from_bytes(bytes(data[:6]), "big", signed=True)
