@@ -20,3 +20,16 @@ READ_ENABLED = 0x3A
 READ_HOME_STATUS = 0x3B
 RELEASE_PROTECTION = 0x3D
 READ_PROTECTION = 0x3E
+
+# settings
+CALIBRATE = 0x80
+SET_WORK_MODE = 0x82  # 0 cr_open, 1 cr_close, 2 cr_vfoc, 3 sr_open, 4 sr_close, 5 sr_vfoc
+SET_CURRENT = 0x83  # mA, uint16
+SET_MICROSTEP = 0x84
+SET_DIRECTION = 0x86
+SET_CAN_ID = 0x8B
+SET_RESPOND = 0x8C
+SET_HOME_PARAMS = 0x90
+GO_HOME = 0x91
+SET_ZERO = 0x92
+SET_LIMIT_REMAP = 0x9E  # second limit switch on the 42D (EN and DIR pins)
