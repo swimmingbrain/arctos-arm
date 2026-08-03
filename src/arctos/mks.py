@@ -52,3 +52,18 @@ WORK_MODE_VFOC = 2  # cr_vfoc: factory default, pulse/direction, CAN motion comm
 WORK_MODE_SR_VFOC = 5  # sr_vfoc: serial (CAN) control, this is what the library needs
 MAX_SPEED = 3000
 MAX_ACC = 255
+
+
+def crc(can_id: int, data: list[int]) -> int:
+    """Checksum as defined in the manual."""
+    return (can_id + sum(data)) & 0xFF
+
+
+def frame(can_id: int, data: list[int]) -> list[int]:
+    """Append the checksum."""
+    return [*data, crc(can_id, data)]
+
+
+def check(can_id: int, data: list[int]) -> bool:
+    """Is the checksum of a reply correct?"""
+    return len(data) >= 2 and crc(can_id, data[:-1]) == data[-1]
