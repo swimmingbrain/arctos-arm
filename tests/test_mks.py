@@ -30,3 +30,9 @@ def test_int48_roundtrip() -> None:
     for v in (0, 16384, -16384, 123456789, -987654321):
         data = list(v.to_bytes(6, "big", signed=True))
         assert mks.from_int48(data) == v
+
+
+def test_deg_counts() -> None:
+    assert mks.deg_to_counts(360) == 16384
+    assert mks.deg_to_counts(-90) == -4096
+    assert mks.counts_to_deg(8192) == 180.0
