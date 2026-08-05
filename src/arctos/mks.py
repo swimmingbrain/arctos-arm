@@ -100,3 +100,24 @@ def clamp_speed(rpm: float) -> int:
 
 def clamp_acc(acc: int) -> int:
     return max(0, min(MAX_ACC, int(acc)))
+
+
+# --- build commands (without crc, frame() appends it) ---
+
+
+def enable(on: bool = True) -> list[int]:
+    return [ENABLE, 1 if on else 0]
+
+
+def stop() -> list[int]:
+    return [STOP]
+
+
+def move_abs(counts: int, rpm: float, acc: int) -> list[int]:
+    """Move to an absolute encoder position."""
+    return [MOVE_ABS, *to_uint16(clamp_speed(rpm)), clamp_acc(acc), *to_int24(counts)]
+
+
+def move_rel(counts: int, rpm: float, acc: int) -> list[int]:
+    """Move by a number of encoder counts."""
+    return [MOVE_REL, *to_uint16(clamp_speed(rpm)), clamp_acc(acc), *to_int24(counts)]
