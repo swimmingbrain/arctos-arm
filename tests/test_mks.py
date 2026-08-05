@@ -36,3 +36,9 @@ def test_deg_counts() -> None:
     assert mks.deg_to_counts(360) == 16384
     assert mks.deg_to_counts(-90) == -4096
     assert mks.counts_to_deg(8192) == 180.0
+
+
+def test_move_abs_layout() -> None:
+    data = mks.move_abs(mks.deg_to_counts(90), 600, 50)
+    assert data == [0xF5, 0x02, 0x58, 50, 0x00, 0x10, 0x00]
+    assert len(mks.frame(3, data)) == 8
