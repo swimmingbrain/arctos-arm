@@ -84,3 +84,19 @@ def to_uint16(value: int) -> list[int]:
 def from_int48(data: list[int]) -> int:
     """Six bytes to a signed integer."""
     return int.from_bytes(bytes(data[:6]), "big", signed=True)
+
+
+def deg_to_counts(deg: float) -> int:
+    return round(deg * ENCODER_PER_TURN / 360.0)
+
+
+def counts_to_deg(counts: int) -> float:
+    return counts * 360.0 / ENCODER_PER_TURN
+
+
+def clamp_speed(rpm: float) -> int:
+    return max(0, min(MAX_SPEED, round(abs(rpm))))
+
+
+def clamp_acc(acc: int) -> int:
+    return max(0, min(MAX_ACC, int(acc)))
