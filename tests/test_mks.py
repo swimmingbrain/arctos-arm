@@ -24,3 +24,9 @@ def test_crc_like_manual() -> None:
 )
 def test_int24(value: int, expected: list[int]) -> None:
     assert mks.to_int24(value) == expected
+
+
+def test_int48_roundtrip() -> None:
+    for v in (0, 16384, -16384, 123456789, -987654321):
+        data = list(v.to_bytes(6, "big", signed=True))
+        assert mks.from_int48(data) == v
