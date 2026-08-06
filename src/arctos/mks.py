@@ -152,3 +152,28 @@ def go_home() -> list[int]:
 
 def set_zero() -> list[int]:
     return [SET_ZERO]
+
+
+def set_current(ma: int) -> list[int]:
+    return [SET_CURRENT, *to_uint16(ma)]
+
+
+def set_work_mode(mode: int) -> list[int]:
+    return [SET_WORK_MODE, mode]
+
+
+def set_home_params(
+    trigger_high: bool, ccw: bool, rpm: int, end_limit: bool, no_limit: bool
+) -> list[int]:
+    return [
+        SET_HOME_PARAMS,
+        1 if trigger_high else 0,
+        1 if ccw else 0,
+        *to_uint16(rpm),
+        1 if end_limit else 0,
+        1 if no_limit else 0,
+    ]
+
+
+def set_limit_remap(on: bool) -> list[int]:
+    return [SET_LIMIT_REMAP, 1 if on else 0]
