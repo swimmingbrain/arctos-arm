@@ -128,3 +128,27 @@ def speed_mode(rpm: float, acc: int) -> list[int]:
     speed = clamp_speed(rpm)
     direction = 0x80 if rpm < 0 else 0x00
     return [SPEED_MODE, direction | ((speed >> 8) & 0x0F), speed & 0xFF, clamp_acc(acc)]
+
+
+def read_encoder() -> list[int]:
+    return [READ_ENCODER]
+
+
+def read_speed() -> list[int]:
+    return [READ_SPEED]
+
+
+def read_io() -> list[int]:
+    return [READ_IO]
+
+
+def query_status() -> list[int]:
+    return [QUERY_STATUS]
+
+
+def go_home() -> list[int]:
+    return [GO_HOME]
+
+
+def set_zero() -> list[int]:
+    return [SET_ZERO]
