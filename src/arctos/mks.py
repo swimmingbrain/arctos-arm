@@ -121,3 +121,10 @@ def move_abs(counts: int, rpm: float, acc: int) -> list[int]:
 def move_rel(counts: int, rpm: float, acc: int) -> list[int]:
     """Move by a number of encoder counts."""
     return [MOVE_REL, *to_uint16(clamp_speed(rpm)), clamp_acc(acc), *to_int24(counts)]
+
+
+def speed_mode(rpm: float, acc: int) -> list[int]:
+    """Run continuously, sign = direction, 0 = stop."""
+    speed = clamp_speed(rpm)
+    direction = 0x80 if rpm < 0 else 0x00
+    return [SPEED_MODE, direction | ((speed >> 8) & 0x0F), speed & 0xFF, clamp_acc(acc)]
