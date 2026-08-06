@@ -177,3 +177,20 @@ def set_home_params(
 
 def set_limit_remap(on: bool) -> list[int]:
     return [SET_LIMIT_REMAP, 1 if on else 0]
+
+
+# --- parse replies ---
+
+
+def parse_encoder(data: list[int]) -> int:
+    """Reply to 0x31: [0x31, 6 bytes position, crc] -> encoder counts."""
+    if len(data) < 7 or data[0] != READ_ENCODER:
+        raise ValueError(f"not an encoder reply: {data}")
+    return from_int48(data[1:7])
+
+
+def parse_speed(data: list[int]) -> int:
+    """Reply to 0x32 -> rpm."""
+    if len(data) < 3 or data[0] != READ_SPEED:
+        raise ValueError(f"not a speed reply: {data}")
+    return int.from_bytes(bytes(data[1:3]), "big", signed=True)
