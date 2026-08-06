@@ -42,3 +42,11 @@ def test_move_abs_layout() -> None:
     data = mks.move_abs(mks.deg_to_counts(90), 600, 50)
     assert data == [0xF5, 0x02, 0x58, 50, 0x00, 0x10, 0x00]
     assert len(mks.frame(3, data)) == 8
+
+
+def test_speed_mode_direction_bit() -> None:
+    fwd = mks.speed_mode(300, 10)
+    back = mks.speed_mode(-300, 10)
+    assert fwd == [0xF6, 0x01, 0x2C, 10]
+    assert back == [0xF6, 0x81, 0x2C, 10]
+    assert mks.speed_mode(9999, 300) == [0xF6, 0x0B, 0xB8, 255]
