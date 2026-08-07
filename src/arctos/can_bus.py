@@ -114,3 +114,23 @@ class CanBus:
         """Throw away old replies."""
         while self.recv(timeout=0.0) is not None:
             pass
+
+    def request(
+        self, can_id: int, data: list[int], timeout: float | None = None
+    ) -> list[int] | None:
+        """Send and wait for the reply with the same id and command byte."""
+        cmd = data[0]
+        deadline = time.monotonic() + (self.timeout if timeout is None else timeout)
+        with self._lock:
+            self.send(can_id, data)
+            while True:
+                left = deadline - time.monotonic()
+                if left <= 0:
+                    log.warning("no reply from id %d to %02x", can_id, cmd)
+                    return None
+                got = self.recv(timeout=left)
+                if got is None:
+                    continue
+                rx_id, rx = got
+                if rx_id == can_id and rx and rx[0] == cmd:
+                    return rx
