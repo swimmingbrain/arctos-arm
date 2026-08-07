@@ -58,3 +58,8 @@ def test_parse_encoder_and_speed() -> None:
     assert mks.parse_speed([0x32, 0xFF, 0x9C, 0]) == -100
     with pytest.raises(ValueError):
         mks.parse_encoder([0x30, 0, 0])
+
+
+def test_parse_io() -> None:
+    io = mks.parse_io([0x34, 0b0101, 0])
+    assert io == {"in_1": True, "in_2": False, "out_1": True, "out_2": False}
