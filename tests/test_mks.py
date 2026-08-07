@@ -50,3 +50,11 @@ def test_speed_mode_direction_bit() -> None:
     assert fwd == [0xF6, 0x01, 0x2C, 10]
     assert back == [0xF6, 0x81, 0x2C, 10]
     assert mks.speed_mode(9999, 300) == [0xF6, 0x0B, 0xB8, 255]
+
+
+def test_parse_encoder_and_speed() -> None:
+    pos = list((-16384).to_bytes(6, "big", signed=True))
+    assert mks.parse_encoder([0x31, *pos, 0]) == -16384
+    assert mks.parse_speed([0x32, 0xFF, 0x9C, 0]) == -100
+    with pytest.raises(ValueError):
+        mks.parse_encoder([0x30, 0, 0])
