@@ -47,3 +47,6 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = ["ikpy.*", "can.*", "Jetson.*"]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
