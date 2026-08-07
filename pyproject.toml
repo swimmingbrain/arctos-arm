@@ -37,3 +37,13 @@ select = ["E", "W", "F", "I", "B", "UP", "ANN"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["ikpy.*", "can.*", "Jetson.*"]
+ignore_missing_imports = true
