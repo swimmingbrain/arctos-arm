@@ -22,3 +22,36 @@ SIM_CHANNEL = "arctos-sim"
 
 class CanError(Exception):
     """Something on the bus went wrong."""
+
+
+class CanBus:
+    """One bus for all motors, created by robot.build()."""
+
+    def __init__(
+        self,
+        interface: str = "slcan",
+        channel: str = "/dev/ttyACM0",
+        bitrate: int = 500000,
+        timeout: float = 0.5,
+        send_gap: float = 0.001,
+    ) -> None:
+        self.interface = interface
+        self.channel = channel
+        self.bitrate = bitrate
+        self.timeout = timeout
+        self.send_gap = send_gap
+        self._bus: Any = None
+        self._lock = threading.RLock()
+        self._last_send = 0.0
+
+    @classmethod
+    def from_config(cls, cfg: dict[str, Any], sim: bool = False) -> CanBus:
+        if sim:
+            return cls(interface="virtual", channel=SIM_CHANNEL)
+        return cls(
+            interface=str(cfg.get("interface", "slcan")),
+            channel=str(cfg.get("channel", "/dev/ttyACM0")),
+            bitrate=int(cfg.get("bitrate", 500000)),
+            timeout=float(cfg.get("timeout", 0.5)),
+            send_gap=float(cfg.get("send_gap", 0.001)),
+        )
