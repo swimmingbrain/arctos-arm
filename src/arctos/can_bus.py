@@ -55,3 +55,35 @@ class CanBus:
             timeout=float(cfg.get("timeout", 0.5)),
             send_gap=float(cfg.get("send_gap", 0.001)),
         )
+
+    @property
+    def is_open(self) -> bool:
+        return self._bus is not None
+
+    def open(self) -> CanBus:
+        if self._bus is not None:
+            return self
+        kwargs: dict[str, Any] = {"interface": self.interface, "channel": self.channel}
+        if self.interface != "virtual":
+            kwargs["bitrate"] = self.bitrate
+        try:
+            self._bus = can.Bus(**kwargs)
+        except Exception as e:  # noqa: BLE001
+            raise CanError(
+                f"cannot open can {self.interface} {self.channel}: {e}"
+            ) from e
+        log.info("can open: %s %s", self.interface, self.channel)
+        return self
+
+    def close(self) -> None:
+        if self._bus is None:
+            return
+        self._bus.shutdown()
+        self._bus = None
+        log.info("can closed")
+
+    def __enter__(self) -> CanBus:
+        return self.open()
+
+    def __exit__(self, *exc: object) -> None:
+        self.close()
