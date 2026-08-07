@@ -58,3 +58,42 @@ class Motor:
 
     def io(self) -> dict[str, bool]:
         return mks.parse_io(self._ask(mks.read_io()))
+
+    # --- move ---
+
+    def enable(self, on: bool = True) -> None:
+        self._ask(mks.enable(on))
+
+    def stop(self) -> None:
+        """Emergency stop, does not wait for a reply."""
+        try:
+            self.bus.send(self.can_id, mks.stop())
+        except CanError as e:
+            log.error("%s stop not sent: %s", self.name, e)
+
+    def move_to(
+        self,
+        deg: float,
+        rpm: float | None = None,
+        acc: int | None = None,
+        wait: bool = True,
+        tolerance: float = 1.0,
+    ) -> None:
+        """Move to an absolute motor angle."""
+        rpm = self._rpm(rpm)
+        rx = self._ask(mks.move_abs(mks.deg_to_counts(deg), rpm, self._acc(acc)))
+        self._check_run(rx)
+        if wait:
+            self.wait_for(deg, tolerance, self._eta(deg, rpm))
+
+    def move_by(
+        self,
+        delta_deg: float,
+        rpm: float | None = None,
+        acc: int | None = None,
+        wait: bool = True,
+        tolerance: float = 1.0,
+    ) -> None:
+        """Turn by a relative angle."""
+        target = self.position() + delta_deg
+        self.move_to(target, rpm, acc, wait, tolerance)
