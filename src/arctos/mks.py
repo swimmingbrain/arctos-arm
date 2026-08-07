@@ -194,3 +194,23 @@ def parse_speed(data: list[int]) -> int:
     if len(data) < 3 or data[0] != READ_SPEED:
         raise ValueError(f"not a speed reply: {data}")
     return int.from_bytes(bytes(data[1:3]), "big", signed=True)
+
+
+def parse_io(data: list[int]) -> dict[str, bool]:
+    """Reply to 0x34 -> state of the pins."""
+    if len(data) < 2 or data[0] != READ_IO:
+        raise ValueError(f"not an io reply: {data}")
+    b = data[1]
+    return {
+        "in_1": bool(b & 0x01),
+        "in_2": bool(b & 0x02),
+        "out_1": bool(b & 0x04),
+        "out_2": bool(b & 0x08),
+    }
+
+
+def parse_status(data: list[int]) -> int:
+    """The second byte is the status in almost every reply."""
+    if len(data) < 2:
+        raise ValueError(f"reply too short: {data}")
+    return data[1]
