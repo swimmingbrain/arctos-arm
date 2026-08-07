@@ -87,3 +87,30 @@ class CanBus:
 
     def __exit__(self, *exc: object) -> None:
         self.close()
+
+    def send(self, can_id: int, data: list[int], with_crc: bool = True) -> None:
+        """Send one frame, the crc is appended unless with_crc is False."""
+        if self._bus is None:
+            raise CanError("bus is not open")
+        payload = mks.frame(can_id, data) if with_crc else list(data)
+        msg = can.Message(arbitration_id=can_id, data=payload, is_extended_id=False)
+        with self._lock:
+            gap = self.send_gap - (time.monotonic() - self._last_send)
+            if gap > 0:
+                time.sleep(gap)
+            self._bus.send(msg)
+            self._last_send = time.monotonic()
+
+    def recv(self, timeout: float | None = None) -> tuple[int, list[int]] | None:
+        """Next frame or None on timeout."""
+        if self._bus is None:
+            raise CanError("bus is not open")
+        msg = self._bus.recv(self.timeout if timeout is None else timeout)
+        if msg is None:
+            return None
+        return int(msg.arbitration_id), list(msg.data)
+
+    def flush(self) -> None:
+        """Throw away old replies."""
+        while self.recv(timeout=0.0) is not None:
+            pass
