@@ -97,3 +97,23 @@ class Motor:
         """Turn by a relative angle."""
         target = self.position() + delta_deg
         self.move_to(target, rpm, acc, wait, tolerance)
+
+    def run(self, rpm: float, acc: int | None = None) -> None:
+        """Run continuously, sign = direction, 0 = stop."""
+        rpm = max(-self.max_rpm, min(self.max_rpm, rpm))
+        self._ask(mks.speed_mode(rpm, self._acc(acc)))
+
+    def wait_for(
+        self, deg: float, tolerance: float = 1.0, timeout: float = 30.0
+    ) -> None:
+        """Block until the encoder is at the target."""
+        deadline = time.monotonic() + timeout
+        while True:
+            pos = self.position()
+            if abs(pos - deg) <= tolerance:
+                return
+            if time.monotonic() > deadline:
+                raise MotorError(
+                    f"{self.name} did not arrive: at {pos:.1f}, wanted {deg:.1f}"
+                )
+            time.sleep(0.02)
