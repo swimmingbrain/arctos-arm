@@ -32,3 +32,29 @@ class Motor:
 
     def __repr__(self) -> str:
         return f"Motor({self.name}, id={self.can_id})"
+
+    # --- read ---
+
+    def ping(self) -> bool:
+        """Does the driver answer?"""
+        return (
+            self.bus.request(self.can_id, mks.query_status(), timeout=0.2) is not None
+        )
+
+    def status(self) -> int:
+        rx = self._ask(mks.query_status())
+        return mks.parse_status(rx)
+
+    def counts(self) -> int:
+        """Accumulated encoder position."""
+        return mks.parse_encoder(self._ask(mks.read_encoder()))
+
+    def position(self) -> float:
+        """Motor angle in degrees."""
+        return mks.counts_to_deg(self.counts())
+
+    def speed(self) -> int:
+        return mks.parse_speed(self._ask(mks.read_speed()))
+
+    def io(self) -> dict[str, bool]:
+        return mks.parse_io(self._ask(mks.read_io()))
