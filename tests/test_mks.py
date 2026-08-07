@@ -63,3 +63,17 @@ def test_parse_encoder_and_speed() -> None:
 def test_parse_io() -> None:
     io = mks.parse_io([0x34, 0b0101, 0])
     assert io == {"in_1": True, "in_2": False, "out_1": True, "out_2": False}
+
+
+def test_set_commands() -> None:
+    assert mks.set_current(1600) == [0x83, 0x06, 0x40]
+    assert mks.set_home_params(False, True, 200, True, False) == [
+        0x90,
+        0,
+        1,
+        0,
+        200,
+        1,
+        0,
+    ]
+    assert mks.enable(False) == [0xF3, 0]
