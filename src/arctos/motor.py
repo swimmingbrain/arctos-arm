@@ -141,3 +141,29 @@ class Motor:
 
     def set_work_mode(self, mode: int = mks.WORK_MODE_VFOC) -> None:
         self._ask(mks.set_work_mode(mode))
+
+    # --- internal ---
+
+    def _ask(self, data: list[int]) -> list[int]:
+        rx = self.bus.request(self.can_id, data)
+        if rx is None:
+            raise MotorError(f"{self.name} (id {self.can_id}) does not answer")
+        return rx
+
+    def _rpm(self, rpm: float | None) -> float:
+        value = self.max_rpm if rpm is None else abs(rpm)
+        return max(1.0, min(float(self.max_rpm), value))
+
+    def _acc(self, acc: int | None) -> int:
+        return self.acc if acc is None else acc
+
+    def _eta(self, deg: float, rpm: float) -> float:
+        """Generous time estimate used as the wait timeout."""
+        distance = abs(deg - self.position())
+        seconds = distance / (rpm * 6.0)  # rpm * 6 = degrees per second
+        return 3.0 + 2.0 * seconds
+
+    @staticmethod
+    def _check_run(rx: list[int]) -> None:
+        if mks.parse_status(rx) == mks.RUN_END_LIMIT:
+            log.warning("limit switch reached")
