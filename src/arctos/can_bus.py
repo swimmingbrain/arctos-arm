@@ -122,6 +122,7 @@ class CanBus:
         cmd = data[0]
         deadline = time.monotonic() + (self.timeout if timeout is None else timeout)
         with self._lock:
+            self.flush()
             self.send(can_id, data)
             while True:
                 left = deadline - time.monotonic()
