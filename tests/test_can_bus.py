@@ -27,3 +27,16 @@ def test_request_gets_reply(bus: CanBus) -> None:
     assert rx is not None
     assert rx[0] == mks.QUERY_STATUS
     assert mks.check(3, rx)
+
+
+def test_request_timeout_returns_none(bus: CanBus) -> None:
+    assert bus.request(9, mks.query_status(), timeout=0.1) is None
+
+
+def test_send_needs_open_bus() -> None:
+    b = CanBus(interface="virtual", channel="closed")
+    assert not b.is_open
+    with pytest.raises(CanError):
+        b.send(1, mks.stop())
+    with pytest.raises(CanError):
+        b.recv()
