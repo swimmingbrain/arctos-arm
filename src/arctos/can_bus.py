@@ -134,4 +134,7 @@ class CanBus:
                     continue
                 rx_id, rx = got
                 if rx_id == can_id and rx and rx[0] == cmd:
+                    if not mks.check(can_id, rx):
+                        log.warning("bad crc from id %d: %s", can_id, rx)
+                        continue
                     return rx
