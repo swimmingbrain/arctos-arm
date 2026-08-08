@@ -61,3 +61,21 @@ class FakeDriver(threading.Thread):
                     )
                 )
         self._bus.shutdown()
+
+    def _tick(self) -> None:
+        """Advance the position the way the motor is currently turning."""
+        now = time.monotonic()
+        dt = (now - self._t) * self.speedup
+        self._t = now
+        if self.free_run:
+            self.counts += self.free_run * mks.ENCODER_PER_TURN / 60.0 * dt
+            return
+        step = self.rpm * mks.ENCODER_PER_TURN / 60.0 * dt
+        diff = self.target - self.counts
+        if abs(diff) <= step:
+            self.counts = self.target
+        else:
+            self.counts += step if diff > 0 else -step
+
+    def _moving(self) -> bool:
+        return bool(self.free_run) or abs(self.target - self.counts) > 0.5
