@@ -117,3 +117,27 @@ class Motor:
                     f"{self.name} did not arrive: at {pos:.1f}, wanted {deg:.1f}"
                 )
             time.sleep(0.02)
+
+    # --- settings ---
+
+    def home(self, timeout: float = 60.0) -> None:
+        """Homing run to the limit switch, the parameters are stored in the driver."""
+        rx = self._ask(mks.go_home())
+        if mks.parse_status(rx) == 0:
+            raise MotorError(f"{self.name} refused to home")
+        deadline = time.monotonic() + timeout
+        time.sleep(0.2)
+        while self.status() in (2, 3, 4, 5):  # still moving, 5 = homing in progress
+            if time.monotonic() > deadline:
+                raise MotorError(f"{self.name} homing takes too long")
+            time.sleep(0.1)
+
+    def set_zero(self) -> None:
+        """The current position becomes 0."""
+        self._ask(mks.set_zero())
+
+    def set_current(self, ma: int) -> None:
+        self._ask(mks.set_current(ma))
+
+    def set_work_mode(self, mode: int = mks.WORK_MODE_VFOC) -> None:
+        self._ask(mks.set_work_mode(mode))
