@@ -28,3 +28,10 @@ def test_ping_and_position(motor: Motor) -> None:
     assert not Motor(motor.bus, 11).ping()
     assert abs(motor.position()) < 0.01
     assert motor.status() == 1
+
+
+def test_move_to_and_by(motor: Motor) -> None:
+    motor.move_to(90, rpm=300)
+    assert abs(motor.position() - 90) <= 1.0
+    motor.move_by(-30, rpm=300)
+    assert abs(motor.position() - 60) <= 1.0
