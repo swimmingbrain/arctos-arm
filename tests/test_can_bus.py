@@ -47,3 +47,13 @@ def test_open_twice_is_fine() -> None:
         assert b.open() is b
         assert b.is_open
     assert not b.is_open
+
+
+def test_from_config_sim_uses_virtual() -> None:
+    b = CanBus.from_config({"interface": "slcan", "channel": "COM1"}, sim=True)
+    assert b.interface == "virtual"
+    real = CanBus.from_config(
+        {"interface": "socketcan", "channel": "can0", "bitrate": 250000}
+    )
+    assert real.interface == "socketcan"
+    assert real.bitrate == 250000
