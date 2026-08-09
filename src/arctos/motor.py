@@ -165,5 +165,8 @@ class Motor:
 
     @staticmethod
     def _check_run(rx: list[int]) -> None:
-        if mks.parse_status(rx) == mks.RUN_END_LIMIT:
+        status = mks.parse_status(rx)
+        if status == mks.RUN_FAIL:
+            raise MotorError("move refused (motor disabled or locked?)")
+        if status == mks.RUN_END_LIMIT:
             log.warning("limit switch reached")
