@@ -40,3 +40,10 @@ def test_send_needs_open_bus() -> None:
         b.send(1, mks.stop())
     with pytest.raises(CanError):
         b.recv()
+
+
+def test_open_twice_is_fine() -> None:
+    with CanBus(interface="virtual", channel="twice") as b:
+        assert b.open() is b
+        assert b.is_open
+    assert not b.is_open
