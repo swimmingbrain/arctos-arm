@@ -35,3 +35,11 @@ def test_move_to_and_by(motor: Motor) -> None:
     assert abs(motor.position() - 90) <= 1.0
     motor.move_by(-30, rpm=300)
     assert abs(motor.position() - 60) <= 1.0
+
+
+def test_move_refused_when_disabled(motor: Motor) -> None:
+    motor.enable(False)
+    with pytest.raises(MotorError):
+        motor.move_to(10)
+    motor.enable(True)
+    motor.move_to(10, rpm=300)
