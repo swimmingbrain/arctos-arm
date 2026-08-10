@@ -159,7 +159,10 @@ class Motor:
 
     def _eta(self, deg: float, rpm: float) -> float:
         """Generous time estimate used as the wait timeout."""
-        distance = abs(deg - self.position())
+        try:
+            distance = abs(deg - self.position())
+        except MotorError:
+            distance = 360.0
         seconds = distance / (rpm * 6.0)  # rpm * 6 = degrees per second
         return 3.0 + 2.0 * seconds
 
