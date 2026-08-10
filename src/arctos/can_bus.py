@@ -101,6 +101,7 @@ class CanBus:
                 time.sleep(gap)
             self._bus.send(msg)
             self._last_send = time.monotonic()
+        log.debug("tx %02x %s", can_id, " ".join(f"{b:02x}" for b in payload))
 
     def recv(self, timeout: float | None = None) -> tuple[int, list[int]] | None:
         """Next frame or None on timeout."""
@@ -109,7 +110,9 @@ class CanBus:
         msg = self._bus.recv(self.timeout if timeout is None else timeout)
         if msg is None:
             return None
-        return int(msg.arbitration_id), list(msg.data)
+        data = list(msg.data)
+        log.debug("rx %02x %s", msg.arbitration_id, " ".join(f"{b:02x}" for b in data))
+        return int(msg.arbitration_id), data
 
     def flush(self) -> None:
         """Throw away old replies."""
