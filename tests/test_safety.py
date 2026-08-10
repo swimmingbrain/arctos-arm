@@ -21,3 +21,9 @@ def test_stop_calls_actions_and_guard_raises() -> None:
     s.clear()
     assert not s.stopped
     s.guard()
+
+
+def test_check_range() -> None:
+    Safety.check_range("x", 10, -20, 20)
+    with pytest.raises(LimitError):
+        Safety.check_range("x", 21, -20, 20)
