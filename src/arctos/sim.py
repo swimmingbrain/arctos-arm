@@ -80,20 +80,26 @@ class FakeDriver(threading.Thread):
     def _moving(self) -> bool:
         return bool(self.free_run) or abs(self.target - self.counts) > 0.5
 
-    def _handle(self, d: list[int]) -> list[int] | None:
+    def _handle(self, d: list[int]) -> list[int] | None:  # noqa: PLR0911
         cmd = d[0]
         if cmd == mks.READ_ENCODER:
             return [cmd, *int(round(self.counts)).to_bytes(6, "big", signed=True)]
         if cmd == mks.READ_SPEED:
-            rpm = self.rpm if self._moving() else 0
+            rpm = self.free_run or (self.rpm if self._moving() else 0)
             return [cmd, *int(rpm).to_bytes(2, "big", signed=True)]
+        if cmd == mks.READ_IO:
+            b = (1 if self.inputs["in_1"] else 0) | (2 if self.inputs["in_2"] else 0)
+            return [cmd, b]
         if cmd == mks.QUERY_STATUS:
-            return [cmd, 4 if self._moving() else 1]
+            if self.homing and not self._moving():
+                self.homing = False
+            return [cmd, 5 if self.homing else (4 if self._moving() else 1)]
         if cmd == mks.ENABLE:
             self.enabled = bool(d[1])
             return [cmd, 1]
         if cmd == mks.STOP:
             self.target = self.counts
+            self.free_run = 0.0
             return [cmd, 1]
         if cmd in (mks.MOVE_ABS, mks.MOVE_REL):
             if not self.enabled:
@@ -101,11 +107,22 @@ class FakeDriver(threading.Thread):
             rpm = (d[1] << 8) | d[2]
             pos = int.from_bytes(bytes(d[4:7]), "big", signed=True)
             self.rpm = float(rpm)
+            self.free_run = 0.0
             self.target = float(pos) if cmd == mks.MOVE_ABS else self.counts + pos
             return [cmd, mks.RUN_STARTING]
+        if cmd == mks.SPEED_MODE:
+            rpm = ((d[1] & 0x0F) << 8) | d[2]
+            self.free_run = -float(rpm) if d[1] & 0x80 else float(rpm)
+            self.target = self.counts
+            return [cmd, 1]
         if cmd == mks.SET_ZERO:
             self.counts = 0.0
             self.target = 0.0
+            return [cmd, 1]
+        if cmd == mks.GO_HOME:
+            self.target = 0.0
+            self.rpm = 200.0
+            self.homing = True
             return [cmd, 1]
         if cmd in (
             mks.SET_CURRENT,
