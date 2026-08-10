@@ -51,3 +51,8 @@ class Safety:
         """Call inside loops, raises Stopped once a stop was requested."""
         if self._stop.is_set():
             raise Stopped(self.reason or "stop")
+
+    @staticmethod
+    def check_range(name: str, value: float, low: float, high: float) -> None:
+        if not low <= value <= high:
+            raise LimitError(f"{name}: {value:.1f} is not within {low} to {high}")
