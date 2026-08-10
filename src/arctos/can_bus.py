@@ -78,6 +78,7 @@ class CanBus:
     def close(self) -> None:
         if self._bus is None:
             return
+        time.sleep(0.05)  # let the last frames out
         self._bus.shutdown()
         self._bus = None
         log.info("can closed")
