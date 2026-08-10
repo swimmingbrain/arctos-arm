@@ -43,3 +43,14 @@ def test_move_refused_when_disabled(motor: Motor) -> None:
         motor.move_to(10)
     motor.enable(True)
     motor.move_to(10, rpm=300)
+
+
+def test_speed_mode_and_stop(motor: Motor) -> None:
+    motor.run(120)
+    time.sleep(0.05)
+    assert motor.position() > 0
+    motor.stop()
+    time.sleep(0.05)
+    a = motor.position()
+    time.sleep(0.05)
+    assert abs(motor.position() - a) < 0.5
