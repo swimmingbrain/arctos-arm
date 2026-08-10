@@ -63,3 +63,8 @@ def test_home_and_zero(motor: Motor) -> None:
     motor.move_to(20, rpm=300)
     motor.set_zero()
     assert abs(motor.position()) < 0.01
+
+
+def test_wait_for_times_out(motor: Motor) -> None:
+    with pytest.raises(MotorError):
+        motor.wait_for(180, timeout=0.05)
