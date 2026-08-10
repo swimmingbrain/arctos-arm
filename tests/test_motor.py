@@ -54,3 +54,12 @@ def test_speed_mode_and_stop(motor: Motor) -> None:
     a = motor.position()
     time.sleep(0.05)
     assert abs(motor.position() - a) < 0.5
+
+
+def test_home_and_zero(motor: Motor) -> None:
+    motor.move_to(45, rpm=300)
+    motor.home()
+    assert abs(motor.position()) < 1.0
+    motor.move_to(20, rpm=300)
+    motor.set_zero()
+    assert abs(motor.position()) < 0.01
