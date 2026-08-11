@@ -59,3 +59,32 @@ class Arm:
 
     def index(self, name: str) -> int:
         return self.names.index(name)
+
+    # --- joint <-> motor conversion ---
+
+    def to_motor(self, joint_degs: Sequence[float]) -> list[float]:
+        """Joint angles -> motor angles (offset, coupling, ratio, direction)."""
+        degs = [d - j.offset for j, d in zip(self.joints, joint_degs, strict=True)]
+        if self.coupling and len(degs) >= 2:
+            m = self.coupling
+            b, c = degs[-2], degs[-1]
+            degs[-2] = m[0][0] * b + m[0][1] * c
+            degs[-1] = m[1][0] * b + m[1][1] * c
+        return [
+            (-d if j.invert else d) * j.ratio
+            for j, d in zip(self.joints, degs, strict=True)
+        ]
+
+    def to_joint(self, motor_degs: Sequence[float]) -> list[float]:
+        """Motor angles -> joint angles, inverse of to_motor."""
+        degs = [
+            (-m if j.invert else m) / j.ratio
+            for j, m in zip(self.joints, motor_degs, strict=True)
+        ]
+        if self.coupling and len(degs) >= 2:
+            m = self.coupling
+            det = m[0][0] * m[1][1] - m[0][1] * m[1][0]
+            mb, mc = degs[-2], degs[-1]
+            degs[-2] = (m[1][1] * mb - m[0][1] * mc) / det
+            degs[-1] = (-m[1][0] * mb + m[0][0] * mc) / det
+        return [d + j.offset for j, d in zip(self.joints, degs, strict=True)]
