@@ -138,7 +138,7 @@ class Arm:
             dist = abs(b - a)
             if dist < 1e-6:
                 continue
-            rpm = min(self.max_rpm, dist / seconds / 6.0)
+            rpm = max(self.min_rpm, min(self.max_rpm, dist / seconds / 6.0))
             j.motor.move_to(b, rpm, wait=False)
         log.info("moving to %s in about %.1f s", [round(g, 1) for g in goal], seconds)
         if wait:
