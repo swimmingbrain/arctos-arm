@@ -133,3 +133,25 @@ class FakeDriver(threading.Thread):
         ):
             return [cmd, 1]
         return None
+
+
+class FakeGripper(threading.Thread):
+    """The gripper board never answers, it only remembers the last position."""
+
+    def __init__(self, can_id: int = 7, channel: str = SIM_CHANNEL) -> None:
+        super().__init__(daemon=True, name="fake-gripper")
+        self.can_id = can_id
+        self.value = 0
+        self._bus = can.Bus(interface="virtual", channel=channel)
+        self._quit = threading.Event()
+
+    def stop(self) -> None:
+        self._quit.set()
+
+    def run(self) -> None:
+        while not self._quit.is_set():
+            msg = self._bus.recv(timeout=0.05)
+            if msg is not None and msg.arbitration_id == self.can_id and len(msg.data):
+                self.value = msg.data[0]
+                log.info("sim gripper: %d", self.value)
+        self._bus.shutdown()
