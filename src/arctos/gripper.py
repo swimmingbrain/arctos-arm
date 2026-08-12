@@ -1,0 +1,40 @@
+"""Gripper: an Arduino Nano with a servo that listens on its own CAN id.
+
+One byte = servo position, no crc, no reply. According to the Arctos docs
+0x63 (99) is open and 0x00 is closed; check on your gripper and put the
+values into the config.
+"""
+
+from __future__ import annotations
+
+import logging
+import time
+
+from arctos.can_bus import CanBus
+
+log = logging.getLogger(__name__)
+
+
+class Gripper:
+    def __init__(
+        self,
+        bus: CanBus,
+        can_id: int = 7,
+        open_value: int = 99,
+        close_value: int = 0,
+        settle: float = 1.0,
+    ) -> None:
+        self.bus = bus
+        self.can_id = can_id
+        self.open_value = open_value
+        self.close_value = close_value
+        self.settle = settle
+        self.value: int | None = None
+
+    def set(self, value: int, wait: bool = True) -> None:
+        """Send a servo position."""
+        self.bus.send(self.can_id, [int(value)], with_crc=False)
+        self.value = int(value)
+        log.info("gripper -> %d", value)
+        if wait:
+            time.sleep(self.settle)
