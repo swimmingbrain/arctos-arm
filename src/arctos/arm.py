@@ -192,3 +192,38 @@ class Arm:
         for j, cur, tgt in zip(self.joints, now, target, strict=True):
             j.offset += tgt - cur
         return {j.name: round(j.offset, 3) for j in self.joints}
+
+    # --- internal ---
+
+    def _pick(self, names: Sequence[str] | None) -> list[Joint]:
+        return self.joints if not names else [self[n] for n in names]
+
+    def _goal(
+        self, now: Sequence[float], target: Sequence[float] | Mapping[str, float]
+    ) -> list[float]:
+        goal = list(now)
+        if isinstance(target, Mapping):
+            for name, value in target.items():
+                goal[self.index(name)] = float(value)
+            return goal
+        if len(target) != len(self.joints):
+            raise ValueError(f"expected {len(self.joints)} angles, got {len(target)}")
+        return [float(v) for v in target]
+
+    def _duration(
+        self,
+        now: Sequence[float],
+        goal: Sequence[float],
+        motor_now: Sequence[float],
+        motor_goal: Sequence[float],
+        speed: float | None,
+    ) -> float:
+        """Duration of the move: the slowest joint decides, motors never exceed max_rpm."""
+        seconds = 0.0
+        for j, a, b in zip(self.joints, now, goal, strict=True):
+            v = speed if speed else j.speed
+            if v > 0:
+                seconds = max(seconds, abs(b - a) / v)
+        for a, b in zip(motor_now, motor_goal, strict=True):
+            seconds = max(seconds, abs(b - a) / (self.max_rpm * 6.0))
+        return seconds
