@@ -33,3 +33,20 @@ def test_coupling_roundtrip() -> None:
     assert motor == [0, -20, 60]
     back = arm.to_joint(motor)
     assert [round(v, 9) for v in back] == [0, 20, 40]
+
+
+def test_offset_roundtrip() -> None:
+    arm = make_arm(coupling=True)
+    arm["x"].offset = -55.0  # driver 0 = joint at -55 (home switch)
+    assert arm.to_joint([0, 0, 0])[0] == -55.0
+    assert arm.to_motor([-55.0, 0, 0])[0] == 0.0
+    back = arm.to_joint(arm.to_motor([12.0, 20, 40]))
+    assert [round(v, 9) for v in back] == [12.0, 20, 40]
+
+
+def test_unknown_joint() -> None:
+    arm = make_arm()
+    with pytest.raises(KeyError):
+        arm["q"]
+    with pytest.raises(ValueError):
+        arm._goal([0, 0, 0], [1, 2])
