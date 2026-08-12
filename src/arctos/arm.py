@@ -100,3 +100,14 @@ class Arm:
 
     def ping(self) -> dict[str, bool]:
         return {j.name: j.motor.ping() for j in self.joints}
+
+    # --- move ---
+
+    def enable(self, on: bool = True) -> None:
+        for j in self.joints:
+            j.motor.enable(on)
+
+    def stop(self) -> None:
+        """Emergency stop to all motors."""
+        for j in self.joints:
+            j.motor.stop()
