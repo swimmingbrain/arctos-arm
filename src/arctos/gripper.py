@@ -38,3 +38,15 @@ class Gripper:
         log.info("gripper -> %d", value)
         if wait:
             time.sleep(self.settle)
+
+    def open(self, wait: bool = True) -> None:
+        self.set(self.open_value, wait)
+
+    def close(self, wait: bool = True) -> None:
+        self.set(self.close_value, wait)
+
+    @property
+    def is_open(self) -> bool | None:
+        if self.value is None:
+            return None
+        return self.value == self.open_value
