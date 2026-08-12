@@ -111,3 +111,35 @@ class Arm:
         """Emergency stop to all motors."""
         for j in self.joints:
             j.motor.stop()
+
+    def move(
+        self,
+        target: Sequence[float] | Mapping[str, float],
+        speed: float | None = None,
+        wait: bool = True,
+    ) -> None:
+        """Move joints so that all of them arrive at the same time.
+
+        target: list with every angle, or a dict {name: angle} for some joints.
+        speed: degrees per second for all joints, default is the per-joint value.
+        """
+        self.safety.guard()
+        now = self.positions()
+        goal = self._goal(now, target)
+        for j, g in zip(self.joints, goal, strict=True):
+            self.safety.check_range(j.name, g, j.min_deg, j.max_deg)
+
+        motor_now = self.to_motor(now)
+        motor_goal = self.to_motor(goal)
+        seconds = self._duration(now, goal, motor_now, motor_goal, speed)
+        if seconds <= 0:
+            return
+        for j, a, b in zip(self.joints, motor_now, motor_goal, strict=True):
+            dist = abs(b - a)
+            if dist < 1e-6:
+                continue
+            rpm = min(self.max_rpm, dist / seconds / 6.0)
+            j.motor.move_to(b, rpm, wait=False)
+        log.info("moving to %s in about %.1f s", [round(g, 1) for g in goal], seconds)
+        if wait:
+            self.wait(goal, timeout=3.0 + 2.0 * seconds)
