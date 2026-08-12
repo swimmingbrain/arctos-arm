@@ -88,3 +88,15 @@ class Arm:
             degs[-2] = (m[1][1] * mb - m[0][1] * mc) / det
             degs[-1] = (-m[1][0] * mb + m[0][0] * mc) / det
         return [d + j.offset for j, d in zip(self.joints, degs, strict=True)]
+
+    # --- read ---
+
+    def positions(self) -> list[float]:
+        """All joint angles in degrees."""
+        return self.to_joint([j.motor.position() for j in self.joints])
+
+    def position(self, name: str) -> float:
+        return self.positions()[self.index(name)]
+
+    def ping(self) -> dict[str, bool]:
+        return {j.name: j.motor.ping() for j in self.joints}
