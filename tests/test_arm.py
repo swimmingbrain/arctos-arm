@@ -23,3 +23,13 @@ def test_to_motor_ratio_and_invert() -> None:
     arm = make_arm(coupling=False)
     assert arm.to_motor([3, 4, 5]) == [30, -8, 10]
     assert arm.to_joint([30, -8, 10]) == [3, 4, 5]
+
+
+def test_coupling_roundtrip() -> None:
+    arm = make_arm(coupling=True)
+    motor = arm.to_motor([0, 20, 40])
+    # motor_b = (c - b)/2 = 10, inverted and ratio 2 -> -20
+    # motor_c = (b + c)/2 = 30, ratio 2 -> 60
+    assert motor == [0, -20, 60]
+    back = arm.to_joint(motor)
+    assert [round(v, 9) for v in back] == [0, 20, 40]
