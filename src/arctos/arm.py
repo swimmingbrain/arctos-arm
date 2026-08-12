@@ -168,3 +168,27 @@ class Arm:
                     f"arm did not arrive, errors {[round(e, 1) for e in errors]}"
                 )
             time.sleep(0.05)
+
+    def home(self, names: Sequence[str] | None = None) -> None:
+        """Homing run, one joint after the other."""
+        for j in self._pick(names):
+            self.safety.guard()
+            log.info("homing %s", j.name)
+            j.motor.home()
+
+    def set_zero(self, names: Sequence[str] | None = None) -> None:
+        """Make the current position 0 inside the drivers."""
+        for j in self._pick(names):
+            j.motor.set_zero()
+
+    def calibrate(self, pose: Sequence[float] | None = None) -> dict[str, float]:
+        """The current position is this pose from now on (default: all zero).
+
+        The per-joint offset is set so that positions() returns the pose.
+        Do this once after homing, then the angles are right after every power up.
+        """
+        now = self.positions()
+        target = [0.0] * len(self.joints) if pose is None else [float(v) for v in pose]
+        for j, cur, tgt in zip(self.joints, now, target, strict=True):
+            j.offset += tgt - cur
+        return {j.name: round(j.offset, 3) for j in self.joints}
