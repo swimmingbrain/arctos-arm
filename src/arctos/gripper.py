@@ -32,9 +32,10 @@ class Gripper:
         self.value: int | None = None
 
     def set(self, value: int, wait: bool = True) -> None:
-        """Send a servo position."""
-        self.bus.send(self.can_id, [int(value)], with_crc=False)
-        self.value = int(value)
+        """Send a servo position from 0 to 255."""
+        value = max(0, min(255, int(value)))
+        self.bus.send(self.can_id, [value], with_crc=False)
+        self.value = value
         log.info("gripper -> %d", value)
         if wait:
             time.sleep(self.settle)
