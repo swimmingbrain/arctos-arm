@@ -143,3 +143,28 @@ class Arm:
         log.info("moving to %s in about %.1f s", [round(g, 1) for g in goal], seconds)
         if wait:
             self.wait(goal, timeout=3.0 + 2.0 * seconds)
+
+    def move_joint(
+        self, name: str, deg: float, speed: float | None = None, wait: bool = True
+    ) -> None:
+        """Move a single joint."""
+        self.move({name: deg}, speed, wait)
+
+    def jog(self, name: str, delta: float, speed: float | None = None) -> None:
+        """Turn a single joint by a relative angle."""
+        self.move({name: self.position(name) + delta}, speed)
+
+    def wait(self, goal: Sequence[float], timeout: float = 30.0) -> None:
+        """Block until every joint is at the goal."""
+        deadline = time.monotonic() + timeout
+        while True:
+            self.safety.guard()
+            now = self.positions()
+            errors = [abs(a - b) for a, b in zip(now, goal, strict=True)]
+            if max(errors) <= self.tolerance:
+                return
+            if time.monotonic() > deadline:
+                raise MotorError(
+                    f"arm did not arrive, errors {[round(e, 1) for e in errors]}"
+                )
+            time.sleep(0.05)
