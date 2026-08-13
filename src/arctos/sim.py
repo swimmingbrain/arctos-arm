@@ -174,3 +174,32 @@ def can_ids(cfg: dict[str, Any]) -> list[int]:
 
     walk(cfg)
     return sorted(found)
+
+
+class Simulation:
+    """Starts and stops all fake devices.
+
+    Every can_id in the config gets a fake driver, except the gripper id.
+    """
+
+    def __init__(self, cfg: dict[str, Any], speedup: float = 1.0) -> None:
+        gripper_id = int(cfg.get("gripper", {}).get("can_id", 7))
+        ids = [i for i in can_ids(cfg) if i != gripper_id]
+        self.drivers = {i: FakeDriver(i, speedup=speedup) for i in ids}
+        self.gripper = FakeGripper(gripper_id)
+
+    def start(self) -> Simulation:
+        for d in self.drivers.values():
+            d.start()
+        self.gripper.start()
+        time.sleep(0.05)
+        log.info("simulation running with ids %s", sorted(self.drivers))
+        return self
+
+    def stop(self) -> None:
+        for d in self.drivers.values():
+            d.stop()
+        self.gripper.stop()
+        for d in self.drivers.values():
+            d.join(timeout=1.0)
+        self.gripper.join(timeout=1.0)
