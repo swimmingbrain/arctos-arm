@@ -155,3 +155,22 @@ class FakeGripper(threading.Thread):
                 self.value = msg.data[0]
                 log.info("sim gripper: %d", self.value)
         self._bus.shutdown()
+
+
+def can_ids(cfg: dict[str, Any]) -> list[int]:
+    """Every can_id mentioned anywhere in the config, sorted."""
+    found: set[int] = set()
+
+    def walk(node: object) -> None:
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key == "can_id" and isinstance(value, int):
+                    found.add(value)
+                else:
+                    walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    walk(cfg)
+    return sorted(found)
