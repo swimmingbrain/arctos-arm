@@ -31,3 +31,20 @@ def config_dir(path: str | Path | None = None) -> Path:
         p = Path(env)
         return p if p.is_dir() else p.parent
     return Path.cwd() / "config"
+
+
+@dataclass
+class Settings:
+    robot: dict[str, Any]
+    poses: dict[str, list[float]] = field(default_factory=dict)
+    offsets: dict[str, float] = field(default_factory=dict)
+    dir: Path = field(default_factory=lambda: Path.cwd() / "config")
+    source: Path = DEFAULT_ROBOT
+
+    def section(self, name: str) -> dict[str, Any]:
+        value = self.robot.get(name)
+        return dict(value) if isinstance(value, dict) else {}
+
+    @property
+    def joint_names(self) -> list[str]:
+        return [str(j["name"]) for j in self.robot.get("joints", [])]
