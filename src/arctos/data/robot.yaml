@@ -35,3 +35,13 @@ joints:
     speed: 30
     acc: 60
     current: 2000
+  - name: y
+    can_id: 2
+    driver: 57d
+    ratio: 150
+    invert: false
+    min: -55
+    max: 125
+    speed: 20
+    acc: 60
+    current: 2500
