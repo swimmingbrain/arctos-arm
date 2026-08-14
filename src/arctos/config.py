@@ -75,3 +75,22 @@ def write_yaml(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         yaml.safe_dump(data, f, allow_unicode=True, sort_keys=False)
+
+
+def load(path: str | Path | None = None) -> Settings:
+    """Read robot.yaml, poses.yaml and offsets.yaml."""
+    d = config_dir(path)
+    robot_file = d / ROBOT_FILE
+    if path is not None and Path(path).is_file():
+        robot_file = Path(path)
+    robot = read_yaml(robot_file)
+    if not robot:
+        if path is not None or os.environ.get(ENV_CONFIG):
+            raise FileNotFoundError(f"no configuration found: {robot_file}")
+        robot_file = DEFAULT_ROBOT
+        robot = read_yaml(robot_file)
+    poses_raw = read_yaml(d / POSES_FILE)
+    poses = {str(k): [float(x) for x in v] for k, v in poses_raw.items()}
+    offsets_raw = read_yaml(d / OFFSETS_FILE)
+    offsets = {str(k): float(v) for k, v in offsets_raw.items()}
+    return Settings(robot=robot, poses=poses, offsets=offsets, dir=d, source=robot_file)
