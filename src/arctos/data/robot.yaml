@@ -1,0 +1,16 @@
+# default configuration for an arctos v2 arm with mks servo42d / servo57d drivers.
+# everything that has to be adapted to a specific robot lives here, not in code.
+# copy it with "arctos init" and edit the copy.
+# angles in degrees, lengths in meters, speeds in rpm at the motor.
+
+can:
+  interface: slcan          # slcan = canable on usb (serial port), socketcan = can0 on linux
+  channel: /dev/ttyACM0     # socketcan: can0, windows: e.g. COM5
+  bitrate: 500000
+  timeout: 0.5              # seconds to wait for a reply
+  send_gap: 0.001           # short pause between two frames, otherwise some get lost
+
+# settings that "arctos setup" writes into the drivers
+driver:
+  work_mode: 5              # 5 = sr_vfoc: closed loop, controlled over can. this is required,
+                            # the factory default 2 (cr_vfoc) is pulse/direction, can moves are ignored
