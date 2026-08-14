@@ -14,3 +14,24 @@ can:
 driver:
   work_mode: 5              # 5 = sr_vfoc: closed loop, controlled over can. this is required,
                             # the factory default 2 (cr_vfoc) is pulse/direction, can moves are ignored
+
+# order = order of the joints from the base to the tool
+# the zero offset per joint lives in offsets.yaml, written by "arctos calibrate"
+# ratio: motor revolutions per joint revolution (arctos docs)
+# invert: true when the motor turns the wrong way (check on the assembled robot).
+#         the official ros2_arctos has invert true on all six, treat that as a hint,
+#         not as a fact: look at every motor with "arctos motor 1 90"
+# speed: default joint speed in degrees per second
+# acc: acceleration of the mks driver, 1 = very slow, 255 = very fast, 0 = instant
+# current: working current in mA, lower = less force (safety), 42d max 3000, 57d max 5200
+joints:
+  - name: x
+    can_id: 1
+    driver: 57d
+    ratio: 13.5
+    invert: false
+    min: -170
+    max: 170
+    speed: 30
+    acc: 60
+    current: 2000
