@@ -61,3 +61,17 @@ class Settings:
     def save_offsets(self, offsets: dict[str, float]) -> None:
         self.offsets = {k: float(v) for k, v in offsets.items()}
         write_yaml(self.dir / OFFSETS_FILE, self.offsets)
+
+
+def read_yaml(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return data if isinstance(data, dict) else {}
+
+
+def write_yaml(path: Path, data: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(data, f, allow_unicode=True, sort_keys=False)
