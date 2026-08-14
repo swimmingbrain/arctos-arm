@@ -48,3 +48,16 @@ class Settings:
     @property
     def joint_names(self) -> list[str]:
         return [str(j["name"]) for j in self.robot.get("joints", [])]
+
+    def pose(self, name: str) -> list[float]:
+        if name not in self.poses:
+            raise KeyError(f"no pose '{name}', known: {sorted(self.poses)}")
+        return [float(v) for v in self.poses[name]]
+
+    def save_pose(self, name: str, degs: list[float]) -> None:
+        self.poses[name] = [float(v) for v in degs]
+        write_yaml(self.dir / POSES_FILE, self.poses)
+
+    def save_offsets(self, offsets: dict[str, float]) -> None:
+        self.offsets = {k: float(v) for k, v in offsets.items()}
+        write_yaml(self.dir / OFFSETS_FILE, self.offsets)
