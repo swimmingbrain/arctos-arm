@@ -45,3 +45,13 @@ joints:
     speed: 20
     acc: 60
     current: 2500
+  - name: z
+    can_id: 3
+    driver: 42d
+    ratio: 150
+    invert: false
+    min: -90
+    max: 70
+    speed: 20
+    acc: 60
+    current: 1800
