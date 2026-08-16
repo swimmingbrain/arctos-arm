@@ -85,3 +85,11 @@ joints:
     speed: 40
     acc: 80
     current: 1000
+
+# the wrist b/c of the arctos is a differential: both motors move both joints.
+# [motor_b, motor_c] = matrix * [joint_b, joint_c], same sign convention as the arctos ros tools
+# if one joint does not move cleanly on its own, swap the signs here.
+# without differential (own modification): enabled: false
+coupling:
+  enabled: true
+  matrix: [[-0.5, 0.5], [0.5, 0.5]]
