@@ -75,3 +75,13 @@ joints:
     speed: 40
     acc: 80
     current: 1000
+  - name: c
+    can_id: 6
+    driver: 42d
+    ratio: 67.82
+    invert: false
+    min: -170
+    max: 170
+    speed: 40
+    acc: 80
+    current: 1000
