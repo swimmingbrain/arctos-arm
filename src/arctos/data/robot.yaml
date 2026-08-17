@@ -99,3 +99,11 @@ motion:
   tolerance: 0.5            # degrees, from where a joint counts as "arrived"
   max_rpm: 1500             # upper limit at the motor, vfoc can do 3000, we stay below
   min_rpm: 5
+
+# gripper: arduino nano with a servo, listens on can id 7, one byte = servo position
+# arctos docs: 0x63 (99) = fully open, 0x00 = fully closed. check on the real gripper.
+gripper:
+  can_id: 7
+  open: 99
+  close: 0
+  settle: 1.0               # seconds to wait until the servo has settled
