@@ -93,3 +93,9 @@ joints:
 coupling:
   enabled: true
   matrix: [[-0.5, 0.5], [0.5, 0.5]]
+
+# when moving several joints: all of them arrive together, the slowest axis sets the time
+motion:
+  tolerance: 0.5            # degrees, from where a joint counts as "arrived"
+  max_rpm: 1500             # upper limit at the motor, vfoc can do 3000, we stay below
+  min_rpm: 5
