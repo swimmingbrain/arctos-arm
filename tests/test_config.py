@@ -14,3 +14,10 @@ def test_load_from_dir(cfg_dir: Path) -> None:
     assert s.pose("home") == [0, 0, 0, 0, 0, 0]
     assert s.section("nothing") == {}
     assert s.source == cfg_dir / config.ROBOT_FILE
+
+
+def test_load_from_file_and_env(cfg_dir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    s = config.load(cfg_dir / config.ROBOT_FILE)
+    assert s.dir == cfg_dir
+    monkeypatch.setenv(config.ENV_CONFIG, str(cfg_dir))
+    assert config.load().dir == cfg_dir
