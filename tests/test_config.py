@@ -21,3 +21,10 @@ def test_load_from_file_and_env(cfg_dir: Path, monkeypatch: pytest.MonkeyPatch) 
     assert s.dir == cfg_dir
     monkeypatch.setenv(config.ENV_CONFIG, str(cfg_dir))
     assert config.load().dir == cfg_dir
+
+
+def test_save_pose_writes_yaml(cfg_dir: Path) -> None:
+    s = config.load(cfg_dir)
+    s.save_pose("test", [1.234, 2, 3, 4, 5, 6])
+    again = config.load(cfg_dir)
+    assert again.pose("test") == [1.23, 2, 3, 4, 5, 6]
