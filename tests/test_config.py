@@ -35,3 +35,13 @@ def test_save_offsets(cfg_dir: Path) -> None:
     assert s.offsets == {}
     s.save_offsets({"x": -55.123456, "y": 0})
     assert config.load(cfg_dir).offsets == {"x": -55.123, "y": 0.0}
+
+
+def test_missing_pose(cfg_dir: Path) -> None:
+    with pytest.raises(KeyError):
+        config.load(cfg_dir).pose("nope")
+
+
+def test_missing_config(tmp_path: Path) -> None:
+    with pytest.raises(FileNotFoundError):
+        config.load(tmp_path)
