@@ -28,3 +28,10 @@ def test_save_pose_writes_yaml(cfg_dir: Path) -> None:
     s.save_pose("test", [1.234, 2, 3, 4, 5, 6])
     again = config.load(cfg_dir)
     assert again.pose("test") == [1.23, 2, 3, 4, 5, 6]
+
+
+def test_save_offsets(cfg_dir: Path) -> None:
+    s = config.load(cfg_dir)
+    assert s.offsets == {}
+    s.save_offsets({"x": -55.123456, "y": 0})
+    assert config.load(cfg_dir).offsets == {"x": -55.123, "y": 0.0}
