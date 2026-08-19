@@ -45,3 +45,14 @@ def test_missing_pose(cfg_dir: Path) -> None:
 def test_missing_config(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError):
         config.load(tmp_path)
+
+
+def test_default_config_when_nothing_found(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv(config.ENV_CONFIG, raising=False)
+    s = config.load()
+    assert s.source == config.DEFAULT_ROBOT
+    assert s.joint_names == ["x", "y", "z", "a", "b", "c"]
+    assert s.dir == tmp_path / "config"
