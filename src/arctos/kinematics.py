@@ -79,3 +79,28 @@ class Kinematics:
         r = self.frame(degs)[:3, :3]
         side = r @ self._side_axis()
         return math.degrees(math.atan2(side[1], side[0]))
+
+    # --- inverse ---
+
+    def ik(
+        self,
+        xyz: Sequence[float],
+        yaw: float | None = None,
+        seed: Sequence[float] | None = None,
+        down: bool = True,
+    ) -> list[float]:
+        """Joint angles (degrees) for a tool position, tool pointing down."""
+        start = self._full(seed) if seed is not None else None
+        kwargs: dict[str, Any] = {}
+        if down:
+            idx = int(np.argmax(np.abs(self.tool_axis)))
+            sign = 1.0 if self.tool_axis[idx] > 0 else -1.0
+            kwargs["orientation_mode"] = "XYZ"[idx]
+            kwargs["target_orientation"] = [0.0, 0.0, -sign]
+        result = self.chain.inverse_kinematics(
+            target_position=list(xyz), initial_position=start, **kwargs
+        )
+        degs = [math.degrees(float(v)) for v in result[1 : 1 + len(self.names)]]
+        if yaw is not None and down:
+            degs = self._turn_to_yaw(degs, yaw)
+        return [round(d, 3) for d in degs]
