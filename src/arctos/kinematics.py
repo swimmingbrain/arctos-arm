@@ -63,3 +63,13 @@ class Kinematics:
         )
         mask = [False] + [True] * len(links) + [False]
         self.chain = Chain(chain_links, active_links_mask=mask, name="arctos")
+
+    # --- forward ---
+
+    def frame(self, degs: Sequence[float]) -> np.ndarray:
+        """4x4 matrix of the tool for joint angles in degrees."""
+        return np.asarray(self.chain.forward_kinematics(self._full(degs)))
+
+    def position(self, degs: Sequence[float]) -> Vec3:
+        p = self.frame(degs)[:3, 3]
+        return (float(p[0]), float(p[1]), float(p[2]))
