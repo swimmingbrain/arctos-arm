@@ -73,3 +73,9 @@ class Kinematics:
     def position(self, degs: Sequence[float]) -> Vec3:
         p = self.frame(degs)[:3, 3]
         return (float(p[0]), float(p[1]), float(p[2]))
+
+    def yaw(self, degs: Sequence[float]) -> float:
+        """Rotation of the tool around the vertical, in degrees."""
+        r = self.frame(degs)[:3, :3]
+        side = r @ self._side_axis()
+        return math.degrees(math.atan2(side[1], side[0]))
