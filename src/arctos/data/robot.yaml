@@ -107,3 +107,14 @@ gripper:
   open: 99
   close: 0
   settle: 1.0               # seconds to wait until the servo has settled
+
+# geometry for the kinematics, from the arctos urdf (ros2_arctos, arctos.xacro)
+# each line: translation from the previous joint (xyz) and the rotation axis
+kinematics:
+  links:
+    - {name: x, xyz: [0.0, 0.0, 0.1126], axis: [0, 0, 1]}
+    - {name: y, xyz: [0.0, -0.020356, 0.175], axis: [1, 0, 0]}
+    - {name: z, xyz: [0.0, 0.001365, 0.261035], axis: [1, 0, 0]}
+    - {name: a, xyz: [0.0, -0.13881, 0.0217651], axis: [0, 1, 0]}
+    - {name: b, xyz: [0.0, -0.12543, -0.00184], axis: [-1, 0, 0]}
+    - {name: c, xyz: [0.0, -0.0398, 0.0], axis: [0, 1, 0]}
