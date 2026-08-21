@@ -104,3 +104,35 @@ class Kinematics:
         if yaw is not None and down:
             degs = self._turn_to_yaw(degs, yaw)
         return [round(d, 3) for d in degs]
+
+    # --- internal ---
+
+    def _full(self, degs: Sequence[float] | None) -> list[float]:
+        """Pad joint angles to the whole chain (origin and tool included)."""
+        if degs is None:
+            return [0.0] * (len(self.names) + 2)
+        return [0.0, *[math.radians(d) for d in degs], 0.0]
+
+    def _side_axis(self) -> np.ndarray:
+        """An axis perpendicular to the tool so that a rotation can be measured."""
+        idx = int(np.argmax(np.abs(self.tool_axis)))
+        side = np.zeros(3)
+        side[(idx + 1) % 3] = 1.0
+        return side
+
+    def _turn_to_yaw(self, degs: list[float], yaw: float) -> list[float]:
+        """Turn the last joint so that the tool has the wanted rotation."""
+        delta = _wrap(yaw - self.yaw(degs))
+        for sign in (1.0, -1.0):
+            trial = list(degs)
+            trial[-1] = degs[-1] + sign * delta
+            if abs(_wrap(self.yaw(trial) - yaw)) < 1.0:
+                return trial
+        log.warning(
+            "rotation %.0f deg not reachable, staying at %.0f", yaw, self.yaw(degs)
+        )
+        return degs
+
+
+def _wrap(deg: float) -> float:
+    return (deg + 180.0) % 360.0 - 180.0
