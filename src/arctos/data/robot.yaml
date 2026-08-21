@@ -118,3 +118,5 @@ kinematics:
     - {name: a, xyz: [0.0, -0.13881, 0.0217651], axis: [0, 1, 0]}
     - {name: b, xyz: [0.0, -0.12543, -0.00184], axis: [-1, 0, 0]}
     - {name: c, xyz: [0.0, -0.0398, 0.0], axis: [0, 1, 0]}
+  tool: [0.0, -0.09, 0.0]   # tool center from the flange, in the frame of the last joint
+  tool_axis: [0, -1, 0]     # direction the tool points to (in the last joint frame)
