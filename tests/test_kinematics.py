@@ -49,3 +49,8 @@ def test_yaw_is_angle_in_degrees(kin: Kinematics) -> None:
     yaw = kin.yaw([0, 40, -30, 0, -80, 0])
     assert -180.0 <= yaw <= 180.0
     assert not math.isnan(yaw)
+
+
+def test_ik_unreachable(kin: Kinematics) -> None:
+    with pytest.raises(IkError):
+        kin.ik((2.0, 0.0, 0.0))
