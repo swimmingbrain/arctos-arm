@@ -43,3 +43,9 @@ def test_ik_hits_target_and_points_down(kin: Kinematics) -> None:
 def test_ik_yaw(kin: Kinematics) -> None:
     degs = kin.ik((0.05, -0.30, 0.05), yaw=45.0, seed=[0, 40, -30, 0, -80, 0])
     assert abs(kin.yaw(degs) - 45.0) < 1.5
+
+
+def test_yaw_is_angle_in_degrees(kin: Kinematics) -> None:
+    yaw = kin.yaw([0, 40, -30, 0, -80, 0])
+    assert -180.0 <= yaw <= 180.0
+    assert not math.isnan(yaw)
