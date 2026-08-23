@@ -38,3 +38,8 @@ def test_ik_hits_target_and_points_down(kin: Kinematics) -> None:
     frame = kin.frame(degs)
     down = frame[:3, :3] @ np.array(kin.tool_axis)
     assert down[2] < -0.98
+
+
+def test_ik_yaw(kin: Kinematics) -> None:
+    degs = kin.ik((0.05, -0.30, 0.05), yaw=45.0, seed=[0, 40, -30, 0, -80, 0])
+    assert abs(kin.yaw(degs) - 45.0) < 1.5
