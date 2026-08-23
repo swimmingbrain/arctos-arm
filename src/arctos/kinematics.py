@@ -101,6 +101,11 @@ class Kinematics:
             target_position=list(xyz), initial_position=start, **kwargs
         )
         degs = [math.degrees(float(v)) for v in result[1 : 1 + len(self.names)]]
+        err = float(np.linalg.norm(np.array(self.position(degs)) - np.array(xyz)))
+        if err > self.max_error:
+            raise IkError(
+                f"position {list(xyz)} not reachable, error {err * 1000:.1f} mm"
+            )
         if yaw is not None and down:
             degs = self._turn_to_yaw(degs, yaw)
         return [round(d, 3) for d in degs]
