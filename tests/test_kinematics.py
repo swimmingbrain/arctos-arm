@@ -54,3 +54,8 @@ def test_yaw_is_angle_in_degrees(kin: Kinematics) -> None:
 def test_ik_unreachable(kin: Kinematics) -> None:
     with pytest.raises(IkError):
         kin.ik((2.0, 0.0, 0.0))
+
+
+def test_wrong_joint_count(kin: Kinematics) -> None:
+    with pytest.raises(ValueError):
+        kin.position([0, 0, 0])
