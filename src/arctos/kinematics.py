@@ -116,6 +116,8 @@ class Kinematics:
         """Pad joint angles to the whole chain (origin and tool included)."""
         if degs is None:
             return [0.0] * (len(self.names) + 2)
+        if len(degs) != len(self.names):
+            raise ValueError(f"expected {len(self.names)} angles, got {len(degs)}")
         return [0.0, *[math.radians(d) for d in degs], 0.0]
 
     def _side_axis(self) -> np.ndarray:
