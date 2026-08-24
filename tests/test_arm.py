@@ -50,3 +50,12 @@ def test_unknown_joint() -> None:
         arm["q"]
     with pytest.raises(ValueError):
         arm._goal([0, 0, 0], [1, 2])
+
+
+def test_sim_move_single_joint(sim_robot: Robot) -> None:
+    arm = sim_robot.arm
+    assert max(abs(p) for p in arm.positions()) < 0.01
+    arm.move_joint("x", 30)
+    assert abs(arm.position("x") - 30) <= arm.tolerance
+    arm.jog("x", -10)
+    assert abs(arm.position("x") - 20) <= arm.tolerance
