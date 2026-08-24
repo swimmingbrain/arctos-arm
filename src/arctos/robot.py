@@ -54,3 +54,19 @@ class Robot:
 
     def clear(self) -> None:
         self.safety.clear()
+
+    # --- poses ---
+
+    def pose(self, name: str) -> list[float]:
+        return self.settings.pose(name)
+
+    def goto(self, name: str, speed: float | None = None) -> None:
+        """Move to a taught pose."""
+        self.arm.move(self.pose(name), speed)
+
+    def teach(self, name: str) -> list[float]:
+        """Store the current position under this name."""
+        degs = self.arm.positions()
+        self.settings.save_pose(name, degs)
+        log.info("pose %s saved: %s", name, [round(d, 1) for d in degs])
+        return degs
