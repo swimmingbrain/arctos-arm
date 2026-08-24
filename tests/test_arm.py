@@ -59,3 +59,17 @@ def test_sim_move_single_joint(sim_robot: Robot) -> None:
     assert abs(arm.position("x") - 30) <= arm.tolerance
     arm.jog("x", -10)
     assert abs(arm.position("x") - 20) <= arm.tolerance
+
+
+def test_sim_move_all_joints(sim_robot: Robot) -> None:
+    arm = sim_robot.arm
+    target = [10, 20, -30, 40, -50, 60]
+    arm.move(target)
+    for got, want in zip(arm.positions(), target, strict=True):
+        assert abs(got - want) <= arm.tolerance
+    # moving b alone has to turn both wrist motors
+    before = [j.motor.position() for j in arm.joints]
+    arm.move({"b": 0})
+    after = [j.motor.position() for j in arm.joints]
+    assert before[4] != after[4] and before[5] != after[5]
+    assert abs(arm.position("c") - 60) <= arm.tolerance
