@@ -73,3 +73,8 @@ def test_sim_move_all_joints(sim_robot: Robot) -> None:
     after = [j.motor.position() for j in arm.joints]
     assert before[4] != after[4] and before[5] != after[5]
     assert abs(arm.position("c") - 60) <= arm.tolerance
+
+
+def test_sim_limits(sim_robot: Robot) -> None:
+    with pytest.raises(LimitError):
+        sim_robot.arm.move_joint("y", 200)
