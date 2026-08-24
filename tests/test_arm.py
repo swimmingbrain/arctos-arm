@@ -97,3 +97,18 @@ def test_sim_home_and_zero(sim_robot: Robot) -> None:
     arm.move_joint("a", 5)
     arm.home(["a"])
     assert abs(arm.position("a")) < 0.5
+
+
+def test_sim_calibrate(sim_robot: Robot) -> None:
+    arm = sim_robot.arm
+    arm.move({"x": 10, "y": 20})
+    offsets = sim_robot.calibrate()
+    assert round(offsets["x"], 1) == -10.0 and round(offsets["y"], 1) == -20.0
+    assert max(abs(p) for p in arm.positions()) <= arm.tolerance
+    # the driver itself still sits there, only the interpretation changed
+    assert abs(arm["x"].motor.position() - 10 * arm["x"].ratio) < 1.0
+    assert (sim_robot.settings.dir / "offsets.yaml").exists()
+
+
+def test_sim_ping(sim_robot: Robot) -> None:
+    assert all(sim_robot.arm.ping().values())
