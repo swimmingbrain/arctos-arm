@@ -94,3 +94,19 @@ def load(path: str | Path | None = None) -> Settings:
     offsets_raw = read_yaml(d / OFFSETS_FILE)
     offsets = {str(k): float(v) for k, v in offsets_raw.items()}
     return Settings(robot=robot, poses=poses, offsets=offsets, dir=d, source=robot_file)
+
+
+def init(path: str | Path | None = None, force: bool = False) -> Path:
+    """Copy the default robot.yaml into the config folder so it can be edited."""
+    d = Path(path) if path is not None else config_dir()
+    if d.suffix in (".yaml", ".yml"):
+        d = d.parent
+    target = d / ROBOT_FILE
+    if target.exists() and not force:
+        raise FileExistsError(f"{target} already exists")
+    d.mkdir(parents=True, exist_ok=True)
+    target.write_text(DEFAULT_ROBOT.read_text(encoding="utf-8"), encoding="utf-8")
+    poses = d / POSES_FILE
+    if not poses.exists():
+        write_yaml(poses, {"home": [0.0] * 6})
+    return target
