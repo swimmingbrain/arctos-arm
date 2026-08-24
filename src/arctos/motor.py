@@ -139,7 +139,7 @@ class Motor:
     def set_current(self, ma: int) -> None:
         self._ask(mks.set_current(ma))
 
-    def set_work_mode(self, mode: int = mks.WORK_MODE_VFOC) -> None:
+    def set_work_mode(self, mode: int = mks.WORK_MODE_SR_VFOC) -> None:
         self._ask(mks.set_work_mode(mode))
 
     # --- internal ---
