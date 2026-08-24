@@ -87,3 +87,13 @@ def test_sim_stop_blocks_motion(sim_robot: Robot) -> None:
     sim_robot.clear()
     sim_robot.arm.move_joint("x", 10)
     assert abs(sim_robot.arm.position("x") - 10) <= sim_robot.arm.tolerance
+
+
+def test_sim_home_and_zero(sim_robot: Robot) -> None:
+    arm = sim_robot.arm
+    arm.move_joint("a", 15)
+    arm.set_zero(["a"])
+    assert abs(arm.position("a")) < 0.01
+    arm.move_joint("a", 5)
+    arm.home(["a"])
+    assert abs(arm.position("a")) < 0.5
