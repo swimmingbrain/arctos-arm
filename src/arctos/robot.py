@@ -141,3 +141,30 @@ def build(
         max_rpm=float(motion.get("max_rpm", 1500)),
         min_rpm=float(motion.get("min_rpm", 5)),
     )
+
+    g = settings.section("gripper")
+    gripper = Gripper(
+        bus,
+        can_id=int(g.get("can_id", 7)),
+        open_value=int(g.get("open", 99)),
+        close_value=int(g.get("close", 0)),
+        settle=float(g.get("settle", 1.0)),
+    )
+
+    k = settings.section("kinematics")
+    kin = Kinematics(
+        links=k.get("links", []),
+        tool=k.get("tool", [0, 0, 0]),
+        tool_axis=k.get("tool_axis", [0, -1, 0]),
+        bounds_deg=[(j.min_deg, j.max_deg) for j in joints],
+    )
+
+    return Robot(
+        settings=settings,
+        bus=bus,
+        arm=arm,
+        gripper=gripper,
+        safety=safety,
+        kin=kin,
+        sim=simulation,
+    )
