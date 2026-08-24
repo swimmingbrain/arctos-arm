@@ -78,3 +78,12 @@ def test_sim_move_all_joints(sim_robot: Robot) -> None:
 def test_sim_limits(sim_robot: Robot) -> None:
     with pytest.raises(LimitError):
         sim_robot.arm.move_joint("y", 200)
+
+
+def test_sim_stop_blocks_motion(sim_robot: Robot) -> None:
+    sim_robot.stop()
+    with pytest.raises(Stopped):
+        sim_robot.arm.move_joint("x", 10)
+    sim_robot.clear()
+    sim_robot.arm.move_joint("x", 10)
+    assert abs(sim_robot.arm.position("x") - 10) <= sim_robot.arm.tolerance
