@@ -70,3 +70,22 @@ class Robot:
         self.settings.save_pose(name, degs)
         log.info("pose %s saved: %s", name, [round(d, 1) for d in degs])
         return degs
+
+    # --- setup ---
+
+    def apply_motor_settings(self) -> None:
+        """Write current and work mode from the config into the drivers."""
+        mode = int(self.settings.section("driver").get("work_mode", 5))
+        for j, raw in zip(self.arm.joints, self.settings.robot["joints"], strict=True):
+            if "current" in raw:
+                j.motor.set_current(int(raw["current"]))
+            j.motor.set_work_mode(mode)
+            log.info("%s: current %s mA, mode %d", j.name, raw.get("current"), mode)
+
+    def calibrate(self, pose_name: str | None = None) -> dict[str, float]:
+        """Current position = zero pose (or the named pose), saved to offsets.yaml."""
+        pose = self.pose(pose_name) if pose_name else None
+        offsets = self.arm.calibrate(pose)
+        self.settings.save_offsets(offsets)
+        log.info("offsets saved: %s", offsets)
+        return offsets
