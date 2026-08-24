@@ -89,3 +89,55 @@ class Robot:
         self.settings.save_offsets(offsets)
         log.info("offsets saved: %s", offsets)
         return offsets
+
+
+def build(
+    path: str | Path | None = None,
+    sim: bool = False,
+    speedup: float = 1.0,
+) -> Robot:
+    """Create everything and open the bus."""
+    settings = config.load(path)
+    cfg = settings.robot
+    safety = Safety()
+
+    simulation = None
+    if sim:
+        simulation = Simulation(cfg, speedup=speedup).start()
+    bus = CanBus.from_config(settings.section("can"), sim=sim).open()
+
+    motion = settings.section("motion")
+    joints = []
+    for raw in cfg.get("joints", []):
+        motor = Motor(
+            bus,
+            int(raw["can_id"]),
+            str(raw["name"]),
+            acc=int(raw.get("acc", 60)),
+            max_rpm=int(motion.get("max_rpm", 1500)),
+        )
+        joints.append(
+            Joint(
+                name=str(raw["name"]),
+                motor=motor,
+                ratio=float(raw.get("ratio", 1.0)),
+                invert=bool(raw.get("invert", False)),
+                offset=float(settings.offsets.get(str(raw["name"]), 0.0)),
+                min_deg=float(raw.get("min", -180)),
+                max_deg=float(raw.get("max", 180)),
+                speed=float(raw.get("speed", 30)),
+                acc=int(raw.get("acc", 60)),
+            )
+        )
+    coupling_cfg = settings.section("coupling")
+    coupling = (
+        coupling_cfg.get("matrix") if coupling_cfg.get("enabled", False) else None
+    )
+    arm = Arm(
+        joints,
+        safety,
+        coupling=coupling,
+        tolerance=float(motion.get("tolerance", 0.5)),
+        max_rpm=float(motion.get("max_rpm", 1500)),
+        min_rpm=float(motion.get("min_rpm", 5)),
+    )
