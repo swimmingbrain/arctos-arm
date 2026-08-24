@@ -16,3 +16,12 @@ def cfg_dir(tmp_path: Path) -> Path:
     shutil.copy(config.DEFAULT_ROBOT, tmp_path / config.ROBOT_FILE)
     config.write_yaml(tmp_path / config.POSES_FILE, POSES)
     return tmp_path
+
+
+@pytest.fixture
+def sim_robot(cfg_dir: Path) -> Iterator[robot.Robot]:
+    r = robot.build(cfg_dir, sim=True, speedup=200.0)
+    try:
+        yield r
+    finally:
+        r.close()
