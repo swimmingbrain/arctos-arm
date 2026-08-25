@@ -56,3 +56,14 @@ def test_default_config_when_nothing_found(
     assert s.source == config.DEFAULT_ROBOT
     assert s.joint_names == ["x", "y", "z", "a", "b", "c"]
     assert s.dir == tmp_path / "config"
+
+
+def test_init_copies_default(tmp_path: Path) -> None:
+    target = config.init(tmp_path / "cfg")
+    assert target == tmp_path / "cfg" / config.ROBOT_FILE
+    assert target.exists()
+    assert (tmp_path / "cfg" / config.POSES_FILE).exists()
+    with pytest.raises(FileExistsError):
+        config.init(tmp_path / "cfg")
+    config.init(tmp_path / "cfg", force=True)
+    assert config.load(tmp_path / "cfg").pose("home") == [0.0] * 6
