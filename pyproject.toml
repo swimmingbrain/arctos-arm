@@ -10,7 +10,11 @@ dependencies = [
     "pyyaml>=6.0",
     "numpy>=1.26",
     "ikpy>=3.4",
+    "typer>=0.12",
 ]
+
+[project.scripts]
+arctos = "arctos.cli:app"
 
 [build-system]
 requires = ["hatchling"]
