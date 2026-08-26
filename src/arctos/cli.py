@@ -185,3 +185,19 @@ def setup() -> None:
     with connect() as r:
         r.apply_motor_settings()
         typer.echo("drivers configured")
+
+
+# --- gripper ---
+
+
+@app.command()
+def gripper(what: str) -> None:
+    """Gripper: open, close or a number from 0 to 255."""
+    with connect() as r:
+        if what == "open":
+            r.gripper.open()
+        elif what == "close":
+            r.gripper.close()
+        else:
+            r.gripper.set(int(what))
+        typer.echo(f"gripper: {r.gripper.value}")
