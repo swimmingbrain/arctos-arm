@@ -244,3 +244,22 @@ def ik(x: float, y: float, z: float, yaw: float | None = None) -> None:
     """Only compute: which joint angles belong to this position?"""
     with connect() as r:
         show(r.arm.names, r.kin.ik((x, y, z), yaw=yaw))
+
+
+@app.command()
+def version() -> None:
+    """Print the library version."""
+    typer.echo(__version__)
+
+
+@app.command()
+def init(
+    force: bool = typer.Option(False, help="overwrite an existing robot.yaml"),
+) -> None:
+    """Copy the default robot.yaml into ./config so it can be edited."""
+    target = config.init(opts.config, force=force)
+    typer.echo(f"written: {target}")
+
+
+if __name__ == "__main__":
+    app()
