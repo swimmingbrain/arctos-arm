@@ -111,7 +111,7 @@ def enable(on: bool = typer.Argument(True)) -> None:
         typer.echo("motors on" if on else "motors off")
 
 
-@app.command()
+@app.command(context_settings=NUMBERS)
 def move(joint: str, deg: float, speed: float | None = None) -> None:
     """Move one joint to an angle, e.g. move y 30."""
     with connect() as r:
@@ -119,7 +119,7 @@ def move(joint: str, deg: float, speed: float | None = None) -> None:
         show(r.arm.names, r.arm.positions())
 
 
-@app.command()
+@app.command(context_settings=NUMBERS)
 def jog(joint: str, delta: float, speed: float | None = None) -> None:
     """Turn one joint by a relative angle, e.g. jog x -5."""
     with connect() as r:
@@ -127,7 +127,7 @@ def jog(joint: str, delta: float, speed: float | None = None) -> None:
         show(r.arm.names, r.arm.positions())
 
 
-@app.command()
+@app.command(context_settings=NUMBERS)
 def joints(deg: list[float], speed: float | None = None) -> None:
     """Move all joints at once: joints x y z a b c."""
     with connect() as r:
@@ -135,7 +135,7 @@ def joints(deg: list[float], speed: float | None = None) -> None:
         show(r.arm.names, r.arm.positions())
 
 
-@app.command()
+@app.command(context_settings=NUMBERS)
 def motor(can_id: int, deg: float, rpm: float = 100, acc: int = 60) -> None:
     """Drive one motor in motor degrees, without gearbox or limits (careful)."""
     from arctos.motor import Motor
@@ -230,7 +230,7 @@ def teach(name: str) -> None:
         show(r.arm.names, degs)
 
 
-@app.command()
+@app.command(context_settings=NUMBERS)
 def xyz(x: float, y: float, z: float, yaw: float | None = None) -> None:
     """Move the tool to a position (meters), tool pointing down."""
     with connect() as r:
@@ -239,7 +239,7 @@ def xyz(x: float, y: float, z: float, yaw: float | None = None) -> None:
         r.arm.move(degs)
 
 
-@app.command()
+@app.command(context_settings=NUMBERS)
 def ik(x: float, y: float, z: float, yaw: float | None = None) -> None:
     """Only compute: which joint angles belong to this position?"""
     with connect() as r:
