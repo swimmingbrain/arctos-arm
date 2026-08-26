@@ -201,3 +201,30 @@ def gripper(what: str) -> None:
         else:
             r.gripper.set(int(what))
         typer.echo(f"gripper: {r.gripper.value}")
+
+
+# --- poses and cartesian ---
+
+
+@app.command()
+def poses() -> None:
+    """List the taught poses."""
+    with connect() as r:
+        for name, degs in r.settings.poses.items():
+            typer.echo(f"{name:12s} {degs}")
+
+
+@app.command()
+def pose(name: str, speed: float | None = None) -> None:
+    """Move to a taught pose, e.g. pose home."""
+    with connect() as r:
+        r.goto(name, speed)
+        show(r.arm.names, r.arm.positions())
+
+
+@app.command()
+def teach(name: str) -> None:
+    """Store the current position as a pose."""
+    with connect() as r:
+        degs = r.teach(name)
+        show(r.arm.names, degs)
