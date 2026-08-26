@@ -84,3 +84,17 @@ def scan() -> None:
     with connect() as r:
         for name, ok in r.arm.ping().items():
             typer.echo(f"{name}: {'ok' if ok else 'no reply'}")
+
+
+@app.command(name="config")
+def show_config() -> None:
+    """Show which configuration is in use."""
+    with connect() as r:
+        s = r.settings
+        typer.echo(f"robot: {s.source}")
+        typer.echo(f"poses and offsets: {s.dir}")
+        for j in r.arm.joints:
+            typer.echo(
+                f"{j.name}: id {j.motor.can_id}, ratio {j.ratio}, "
+                f"{j.min_deg} to {j.max_deg} deg, offset {j.offset}"
+            )
