@@ -160,3 +160,28 @@ def zero(joint: list[str] | None = typer.Argument(None)) -> None:
     with connect() as r:
         r.arm.set_zero(joint or None)
         typer.echo("zero set")
+
+
+@app.command()
+def calibrate(pose: str | None = None) -> None:
+    """The current position is the zero pose (or the named pose), store offsets."""
+    with connect() as r:
+        offsets = r.calibrate(pose)
+        typer.echo(f"offsets saved: {offsets}")
+        show(r.arm.names, r.arm.positions())
+
+
+@app.command()
+def stop() -> None:
+    """Emergency stop to all motors."""
+    with connect() as r:
+        r.arm.stop()
+        typer.echo("stop sent")
+
+
+@app.command()
+def setup() -> None:
+    """Write current and work mode from the config into the drivers."""
+    with connect() as r:
+        r.apply_motor_settings()
+        typer.echo("drivers configured")
