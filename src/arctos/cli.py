@@ -228,3 +228,19 @@ def teach(name: str) -> None:
     with connect() as r:
         degs = r.teach(name)
         show(r.arm.names, degs)
+
+
+@app.command()
+def xyz(x: float, y: float, z: float, yaw: float | None = None) -> None:
+    """Move the tool to a position (meters), tool pointing down."""
+    with connect() as r:
+        degs = r.kin.ik((x, y, z), yaw=yaw, seed=r.arm.positions())
+        show(r.arm.names, degs)
+        r.arm.move(degs)
+
+
+@app.command()
+def ik(x: float, y: float, z: float, yaw: float | None = None) -> None:
+    """Only compute: which joint angles belong to this position?"""
+    with connect() as r:
+        show(r.arm.names, r.kin.ik((x, y, z), yaw=yaw))
