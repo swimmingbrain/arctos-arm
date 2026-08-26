@@ -133,3 +133,30 @@ def joints(deg: list[float], speed: float | None = None) -> None:
     with connect() as r:
         r.arm.move(deg, speed)
         show(r.arm.names, r.arm.positions())
+
+
+@app.command()
+def motor(can_id: int, deg: float, rpm: float = 100, acc: int = 60) -> None:
+    """Drive one motor in motor degrees, without gearbox or limits (careful)."""
+    from arctos.motor import Motor
+
+    with connect() as r:
+        m = Motor(r.bus, can_id, f"id{can_id}", acc=acc)
+        m.move_to(deg, rpm)
+        typer.echo(f"motor {can_id}: {m.position():.1f} deg")
+
+
+@app.command()
+def home(joint: list[str] | None = typer.Argument(None)) -> None:
+    """Homing run, all joints or only the named ones."""
+    with connect() as r:
+        r.arm.home(joint or None)
+        show(r.arm.names, r.arm.positions())
+
+
+@app.command()
+def zero(joint: list[str] | None = typer.Argument(None)) -> None:
+    """Make the current position 0 inside the drivers."""
+    with connect() as r:
+        r.arm.set_zero(joint or None)
+        typer.echo("zero set")
