@@ -61,3 +61,26 @@ def main(
 ) -> None:
     opts.config, opts.sim, opts.speedup = config_path, sim, speedup
     configure_logging(logging.DEBUG if verbose else logging.INFO)
+
+
+# --- read ---
+
+
+@app.command()
+def status() -> None:
+    """Show joint angles and tool position."""
+    with connect() as r:
+        degs = r.arm.positions()
+        show(r.arm.names, degs)
+        x, y, z = r.kin.position(degs)
+        typer.echo(
+            f"tool: x={x:.3f} y={y:.3f} z={z:.3f} m, yaw={r.kin.yaw(degs):.1f}"
+        )
+
+
+@app.command()
+def scan() -> None:
+    """Which motors answer on the bus?"""
+    with connect() as r:
+        for name, ok in r.arm.ping().items():
+            typer.echo(f"{name}: {'ok' if ok else 'no reply'}")
