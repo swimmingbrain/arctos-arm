@@ -98,3 +98,38 @@ def show_config() -> None:
                 f"{j.name}: id {j.motor.can_id}, ratio {j.ratio}, "
                 f"{j.min_deg} to {j.max_deg} deg, offset {j.offset}"
             )
+
+
+# --- single motors and joints ---
+
+
+@app.command()
+def enable(on: bool = typer.Argument(True)) -> None:
+    """Enable (true) or release (false) all motors."""
+    with connect() as r:
+        r.arm.enable(on)
+        typer.echo("motors on" if on else "motors off")
+
+
+@app.command()
+def move(joint: str, deg: float, speed: float | None = None) -> None:
+    """Move one joint to an angle, e.g. move y 30."""
+    with connect() as r:
+        r.arm.move_joint(joint, deg, speed)
+        show(r.arm.names, r.arm.positions())
+
+
+@app.command()
+def jog(joint: str, delta: float, speed: float | None = None) -> None:
+    """Turn one joint by a relative angle, e.g. jog x -5."""
+    with connect() as r:
+        r.arm.jog(joint, delta, speed)
+        show(r.arm.names, r.arm.positions())
+
+
+@app.command()
+def joints(deg: list[float], speed: float | None = None) -> None:
+    """Move all joints at once: joints x y z a b c."""
+    with connect() as r:
+        r.arm.move(deg, speed)
+        show(r.arm.names, r.arm.positions())
