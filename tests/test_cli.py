@@ -23,3 +23,10 @@ def test_help() -> None:
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "status" in result.output and "calibrate" in result.output
+
+
+def test_status_and_scan(cfg_dir: Path) -> None:
+    out = run(cfg_dir, "status")
+    assert "x=" in out and "tool:" in out
+    out = run(cfg_dir, "scan")
+    assert out.count(": ok") == 6
