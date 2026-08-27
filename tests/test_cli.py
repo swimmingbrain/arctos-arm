@@ -39,3 +39,12 @@ def test_move_and_joints(cfg_dir: Path) -> None:
     assert "y=  10.0" in out and "b= -20.0" in out
     out = run(cfg_dir, "jog", "x", "--", "-5")
     assert "x=  -5.0" in out
+
+
+def test_teach_and_pose(cfg_dir: Path) -> None:
+    run(cfg_dir, "move", "x", "12")
+    run(cfg_dir, "teach", "test")
+    out = run(cfg_dir, "poses")
+    assert "home" in out and "test" in out
+    out = run(cfg_dir, "pose", "home")
+    assert "x=   0.0" in out
