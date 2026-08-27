@@ -30,3 +30,12 @@ def test_status_and_scan(cfg_dir: Path) -> None:
     assert "x=" in out and "tool:" in out
     out = run(cfg_dir, "scan")
     assert out.count(": ok") == 6
+
+
+def test_move_and_joints(cfg_dir: Path) -> None:
+    out = run(cfg_dir, "move", "x", "25")
+    assert "x=  25.0" in out
+    out = run(cfg_dir, "joints", "0", "10", "-10", "0", "-20", "0")
+    assert "y=  10.0" in out and "b= -20.0" in out
+    out = run(cfg_dir, "jog", "x", "--", "-5")
+    assert "x=  -5.0" in out
