@@ -69,3 +69,9 @@ def test_ik_and_xyz(cfg_dir: Path) -> None:
     assert out.count("=") == 6
     out = run(cfg_dir, "xyz", "0.1", "--", "-0.3", "0.05")
     assert "x=" in out
+
+
+def test_config_and_version(cfg_dir: Path) -> None:
+    out = run(cfg_dir, "config")
+    assert "robot:" in out and "x: id 1" in out
+    assert __version__ in run(cfg_dir, "version")
