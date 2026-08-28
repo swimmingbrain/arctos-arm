@@ -55,3 +55,10 @@ def test_calibrate(cfg_dir: Path) -> None:
     out = run(cfg_dir, "calibrate")
     assert "offsets saved" in out
     assert (cfg_dir / "offsets.yaml").exists()
+
+
+def test_gripper_and_stop(cfg_dir: Path) -> None:
+    out = run(cfg_dir, "gripper", "open")
+    assert "gripper: 99" in out
+    out = run(cfg_dir, "stop")
+    assert "stop sent" in out
