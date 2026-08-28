@@ -62,3 +62,10 @@ def test_gripper_and_stop(cfg_dir: Path) -> None:
     assert "gripper: 99" in out
     out = run(cfg_dir, "stop")
     assert "stop sent" in out
+
+
+def test_ik_and_xyz(cfg_dir: Path) -> None:
+    out = run(cfg_dir, "ik", "0.1", "--", "-0.3", "0.05")
+    assert out.count("=") == 6
+    out = run(cfg_dir, "xyz", "0.1", "--", "-0.3", "0.05")
+    assert "x=" in out
