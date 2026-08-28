@@ -48,3 +48,10 @@ def test_teach_and_pose(cfg_dir: Path) -> None:
     assert "home" in out and "test" in out
     out = run(cfg_dir, "pose", "home")
     assert "x=   0.0" in out
+
+
+def test_calibrate(cfg_dir: Path) -> None:
+    run(cfg_dir, "move", "x", "12")
+    out = run(cfg_dir, "calibrate")
+    assert "offsets saved" in out
+    assert (cfg_dir / "offsets.yaml").exists()
