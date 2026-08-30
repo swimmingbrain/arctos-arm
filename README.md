@@ -134,3 +134,10 @@ uv run ruff format src tests
 uv run ruff check --fix src tests
 uv run mypy src
 ```
+
+## License
+
+MIT. The robot model in `ros2/arctos_description` comes from
+[ros2_arctos](https://github.com/cr0Kz/ros2_arctos) and is Apache 2.0, see
+the license file in that folder. The CAN protocol follows the MKS SERVO42D/57D
+manual from [makerbase-motor](https://github.com/makerbase-motor).
