@@ -124,3 +124,13 @@ The emergency stop has to cut the motor power in hardware. In software
 Currents, speeds and joint limits in the config are deliberately low. Start
 with `arctos motor` on a single driver and low speeds before moving the
 whole arm.
+
+## Development
+
+```bash
+uv sync --group dev
+uv run pytest                       # all tests run in the simulation
+uv run ruff format src tests
+uv run ruff check --fix src tests
+uv run mypy src
+```
