@@ -102,3 +102,16 @@ single `Motor` on a `CanBus` if all you want is to spin one driver.
 
 The commands of the CLI can be added to your own typer app, see
 `examples/custom_cli.py`.
+
+## Configuration
+
+Everything that depends on the robot lives in `robot.yaml`: CAN port, joints
+with CAN id, gear ratio, direction, limits, speed and current, the wrist
+coupling matrix, the gripper and the geometry for the kinematics. Taught poses
+go to `poses.yaml`, the zero offsets that `arctos calibrate` computes go to
+`offsets.yaml`.
+
+The config folder is found in this order: `--config`, the environment variable
+`ARCTOS_CONFIG`, `./config`. When there is no robot.yaml the default for an
+Arctos v2 that ships with the package is used, so the simulation works right
+after the install. Details in [docs/configuration.md](docs/configuration.md).
