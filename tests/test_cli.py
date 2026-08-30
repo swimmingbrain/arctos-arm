@@ -75,3 +75,12 @@ def test_config_and_version(cfg_dir: Path) -> None:
     out = run(cfg_dir, "config")
     assert "robot:" in out and "x: id 1" in out
     assert __version__ in run(cfg_dir, "version")
+
+
+def test_init(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["init"])
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "config" / "robot.yaml").exists()
+    result = runner.invoke(app, ["init"])
+    assert result.exit_code != 0
