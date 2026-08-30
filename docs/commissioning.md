@@ -43,3 +43,13 @@ arctos setup
 Writes `current` and `driver.work_mode` from the config into every driver.
 The default currents are low on purpose. More current means more torque and
 more heat; the 42D takes up to 3000 mA, the 57D up to 5200 mA.
+
+## 4. One motor at a time
+
+```bash
+arctos motor 1 90 --rpm 100      # motor degrees, no gearbox, no limits
+arctos motor 1 0 --rpm 100
+```
+
+Watch the direction. If the joint turns the wrong way, set `invert: true`
+for that joint in `robot.yaml`. Do this for ids 1 to 6.
