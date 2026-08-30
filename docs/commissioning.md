@@ -33,3 +33,13 @@ arctos scan
 
 All six joints have to answer. If nothing answers: wrong port, wrong bitrate,
 missing terminator, or the drivers are in a mode without CAN.
+
+## 3. Currents
+
+```bash
+arctos setup
+```
+
+Writes `current` and `driver.work_mode` from the config into every driver.
+The default currents are low on purpose. More current means more torque and
+more heat; the 42D takes up to 3000 mA, the 57D up to 5200 mA.
