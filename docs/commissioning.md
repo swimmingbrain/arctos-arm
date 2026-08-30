@@ -53,3 +53,15 @@ arctos motor 1 0 --rpm 100
 
 Watch the direction. If the joint turns the wrong way, set `invert: true`
 for that joint in `robot.yaml`. Do this for ids 1 to 6.
+
+## 5. Joints
+
+```bash
+arctos move x 20
+arctos move -- x -20
+arctos move b 20
+```
+
+`move` uses the ratio, the direction and the limits from the config. On the
+wrist both motors have to turn for `b` and for `c`. If the wrong joint moves,
+swap the signs in `coupling.matrix`.
