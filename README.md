@@ -70,3 +70,12 @@ arctos joints 0 45 -30 0 -60 0     # all joints, they arrive together
 arctos motor 3 90 --rpm 200        # one driver in motor degrees (no gearbox, no limits)
 arctos home                        # homing run of all joints, or: home x y
 arctos zero                        # driver: current position is 0
+arctos calibrate                   # software: current position is the zero pose
+arctos stop                        # emergency stop to all drivers
+arctos gripper open                # or close, or a number from 0 to 255
+arctos teach pick                  # store the current position as a pose
+arctos pose pick                   # move to a stored pose
+arctos xyz 0.1 -0.3 0.05           # tool to x y z in meters, pointing down
+arctos ik 0.1 -0.3 0.05            # only compute the joint angles
+arctos setup                       # write current and work mode into the drivers
+```
