@@ -33,3 +33,22 @@ pip install git+https://github.com/swimmingbrain/arctos-arm
 ```
 
 For development clone the repository and run `uv sync --group dev`.
+
+## Quick start
+
+Nothing plugged in? Use the simulation:
+
+```bash
+arctos --sim status                 # joint angles and tool position
+arctos --sim move y 30              # one joint to 30 degrees
+arctos --sim joints 0 45 -30 0 -60 0
+arctos --sim xyz 0.1 -0.3 0.05      # tool to x y z in meters, pointing down
+```
+
+On the real arm leave out `--sim`. First copy the default configuration and
+put in your CAN port:
+
+```bash
+arctos init                          # writes config/robot.yaml and config/poses.yaml
+arctos scan                          # which drivers answer
+```
