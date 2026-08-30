@@ -79,3 +79,26 @@ arctos xyz 0.1 -0.3 0.05           # tool to x y z in meters, pointing down
 arctos ik 0.1 -0.3 0.05            # only compute the joint angles
 arctos setup                       # write current and work mode into the drivers
 ```
+
+## From Python
+
+```python
+from arctos import robot
+
+with robot.build(sim=True) as r:
+    r.arm.move_joint("x", 30)
+    r.arm.move([0, 40, -30, 0, -80, 0])
+    r.gripper.close()
+    print(r.arm.positions())
+    print(r.kin.position(r.arm.positions()))
+    degs = r.kin.ik((0.1, -0.3, 0.05), seed=r.arm.positions())
+    r.arm.move(degs)
+```
+
+`robot.build()` reads the config, opens the bus and gives you `arm`, `gripper`,
+`kin` (kinematics), `safety` and `settings`. With `sim=True` it also starts the
+virtual drivers. Every object can be used on its own as well, for example a
+single `Motor` on a `CanBus` if all you want is to spin one driver.
+
+The commands of the CLI can be added to your own typer app, see
+`examples/custom_cli.py`.
