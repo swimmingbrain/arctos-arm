@@ -23,3 +23,13 @@ Set these on each driver, either on its display or with Arctos Studio:
 
 `arctos setup` writes the current and the work mode from `robot.yaml`
 later on, but the CAN id and bitrate have to be set by hand first.
+
+## 2. Bus check
+
+```bash
+arctos init                 # once, then edit config/robot.yaml: can.channel
+arctos scan
+```
+
+All six joints have to answer. If nothing answers: wrong port, wrong bitrate,
+missing terminator, or the drivers are in a mode without CAN.
