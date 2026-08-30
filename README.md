@@ -23,3 +23,13 @@ without the robot.
 | `arctos.config` | robot.yaml, poses.yaml, offsets.yaml |
 | `arctos.robot` | builds everything from the config |
 | `arctos.cli` | the `arctos` command |
+
+## Install
+
+```bash
+uv add git+https://github.com/swimmingbrain/arctos-arm
+# or
+pip install git+https://github.com/swimmingbrain/arctos-arm
+```
+
+For development clone the repository and run `uv sync --group dev`.
