@@ -115,3 +115,12 @@ The config folder is found in this order: `--config`, the environment variable
 `ARCTOS_CONFIG`, `./config`. When there is no robot.yaml the default for an
 Arctos v2 that ships with the package is used, so the simulation works right
 after the install. Details in [docs/configuration.md](docs/configuration.md).
+
+## Safety
+
+The emergency stop has to cut the motor power in hardware. In software
+`arctos stop`, `robot.stop()` and the e-stop input send the stop command
+(0xF7) to every driver and block any further motion until `clear()`.
+Currents, speeds and joint limits in the config are deliberately low. Start
+with `arctos motor` on a single driver and low speeds before moving the
+whole arm.
