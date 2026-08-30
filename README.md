@@ -52,3 +52,21 @@ put in your CAN port:
 arctos init                          # writes config/robot.yaml and config/poses.yaml
 arctos scan                          # which drivers answer
 ```
+
+## Commands
+
+Every command does one thing. `--sim` in front runs it without hardware,
+`--config path` points to another robot.yaml.
+
+```bash
+arctos scan                        # which motors answer
+arctos status                      # joint angles and tool position
+arctos config                      # which config is in use, joints, offsets
+arctos enable false                # release the motors (move by hand)
+arctos move y 30                   # one joint to 30 degrees
+arctos move -- y -30               # negative numbers need the --
+arctos jog x 5                     # one joint by 5 degrees
+arctos joints 0 45 -30 0 -60 0     # all joints, they arrive together
+arctos motor 3 90 --rpm 200        # one driver in motor degrees (no gearbox, no limits)
+arctos home                        # homing run of all joints, or: home x y
+arctos zero                        # driver: current position is 0
