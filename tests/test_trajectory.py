@@ -36,3 +36,7 @@ def test_follow_arrives_on_time(sim_robot: Robot) -> None:
     assert 0.9 <= elapsed <= 4.0
     for got, want in zip(arm.positions(), [20, 10, 0, 0, -30, 0], strict=True):
         assert abs(got - want) <= arm.tolerance
+
+
+def test_follow_empty(sim_robot: Robot) -> None:
+    trajectory.follow(sim_robot.arm, [])
