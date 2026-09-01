@@ -88,3 +88,17 @@ arctos calibrate
 This stores the difference between the switch position and the zero pose in
 `offsets.yaml`. From now on `arctos home` after every power up is enough,
 the angles are right afterwards.
+
+## 8. Poses and kinematics
+
+```bash
+arctos enable false               # release the motors, move the arm by hand
+arctos teach pick                 # store the position
+arctos enable true
+arctos status                     # tool position from the kinematics
+arctos xyz 0.1 -0.3 0.05          # move the tool to a point
+```
+
+If `status` shows a tool position that does not match reality, the
+`kinematics.links` numbers or an `invert` flag are wrong. Compare with the
+URDF in `ros2/arctos_description`.
