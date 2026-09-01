@@ -102,3 +102,14 @@ arctos xyz 0.1 -0.3 0.05          # move the tool to a point
 If `status` shows a tool position that does not match reality, the
 `kinematics.links` numbers or an `invert` flag are wrong. Compare with the
 URDF in `ros2/arctos_description`.
+
+## If something does not work
+
+| Symptom | Check first |
+|---|---|
+| `scan` shows no reply | port, bitrate, terminator, driver work mode |
+| a motor moves but `move` raises "did not arrive" | ratio or invert wrong, or speed too high for the current |
+| move refused | motor disabled, or protection triggered (power cycle the driver) |
+| homing takes too long | switch not wired or homing parameters not stored in the driver |
+| wrist moves diagonally | signs in `coupling.matrix` |
+| xyz ends up somewhere else | offsets missing (`calibrate`), `kinematics.links` |
