@@ -65,3 +65,8 @@ arctos move b 20
 `move` uses the ratio, the direction and the limits from the config. On the
 wrist both motors have to turn for `b` and for `c`. If the wrong joint moves,
 swap the signs in `coupling.matrix`.
+
+## 6. Limits
+
+Check `min` and `max` of every joint on the robot and make them tighter if
+something touches. The limits are checked in software before every move.
