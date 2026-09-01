@@ -116,6 +116,12 @@ The config folder is found in this order: `--config`, the environment variable
 Arctos v2 that ships with the package is used, so the simulation works right
 after the install. Details in [docs/configuration.md](docs/configuration.md).
 
+## Bringing up a real arm
+
+Step by step in [docs/commissioning.md](docs/commissioning.md): driver
+settings in Arctos Studio, CAN ids, checking directions, the wrist
+differential, homing and the zero pose.
+
 ## Safety
 
 The emergency stop has to cut the motor power in hardware. In software
