@@ -117,21 +117,25 @@ class Arm:
         target: Sequence[float] | Mapping[str, float],
         speed: float | None = None,
         wait: bool = True,
+        duration: float | None = None,
+        start: Sequence[float] | None = None,
     ) -> None:
         """Move joints so that all of them arrive at the same time.
 
         target: list with every angle, or a dict {name: angle} for some joints.
         speed: degrees per second for all joints, default is the per-joint value.
+        duration: seconds for the move, the motor speeds are derived from it.
+        start: angles to plan from (path following), saves reading the encoders.
         """
         self.safety.guard()
-        now = self.positions()
+        now = list(start) if start is not None else self.positions()
         goal = self._goal(now, target)
         for j, g in zip(self.joints, goal, strict=True):
             self.safety.check_range(j.name, g, j.min_deg, j.max_deg)
 
         motor_now = self.to_motor(now)
         motor_goal = self.to_motor(goal)
-        seconds = self._duration(now, goal, motor_now, motor_goal, speed)
+        seconds = self._duration(now, goal, motor_now, motor_goal, speed, duration)
         if seconds <= 0:
             return
         for j, a, b in zip(self.joints, motor_now, motor_goal, strict=True):
@@ -140,7 +144,10 @@ class Arm:
                 continue
             rpm = max(self.min_rpm, min(self.max_rpm, dist / seconds / 6.0))
             j.motor.move_to(b, rpm, wait=False)
-        log.info("moving to %s in about %.1f s", [round(g, 1) for g in goal], seconds)
+        level = logging.DEBUG if duration is not None else logging.INFO
+        log.log(
+            level, "moving to %s in about %.1f s", [round(g, 1) for g in goal], seconds
+        )
         if wait:
             self.wait(goal, timeout=3.0 + 2.0 * seconds)
 
@@ -217,13 +224,15 @@ class Arm:
         motor_now: Sequence[float],
         motor_goal: Sequence[float],
         speed: float | None,
+        duration: float | None = None,
     ) -> float:
-        """Duration of the move: the slowest joint decides, motors never exceed max_rpm."""
-        seconds = 0.0
-        for j, a, b in zip(self.joints, now, goal, strict=True):
-            v = speed if speed else j.speed
-            if v > 0:
-                seconds = max(seconds, abs(b - a) / v)
+        """Duration of the move: as given, or set by the slowest joint."""
+        seconds = duration or 0.0
+        if duration is None:
+            for j, a, b in zip(self.joints, now, goal, strict=True):
+                v = speed if speed else j.speed
+                if v > 0:
+                    seconds = max(seconds, abs(b - a) / v)
         for a, b in zip(motor_now, motor_goal, strict=True):
             seconds = max(seconds, abs(b - a) / (self.max_rpm * 6.0))
         return seconds
