@@ -70,3 +70,21 @@ swap the signs in `coupling.matrix`.
 
 Check `min` and `max` of every joint on the robot and make them tighter if
 something touches. The limits are checked in software before every move.
+
+## 7. Homing and the zero pose
+
+```bash
+arctos home                       # every joint drives to its switch, one after the other
+```
+
+Then bring the arm into the zero pose by hand or with `move` (upper arm
+vertical, forearm horizontal, tool pointing forward, all wrist joints
+centered) and run
+
+```bash
+arctos calibrate
+```
+
+This stores the difference between the switch position and the zero pose in
+`offsets.yaml`. From now on `arctos home` after every power up is enough,
+the angles are right afterwards.
