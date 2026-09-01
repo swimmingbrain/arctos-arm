@@ -23,3 +23,14 @@ MIN_DT = 0.02  # seconds, a step cannot be shorter than this
 class Point:
     time: float  # seconds from the start of the path
     degs: list[float]  # joint angles in degrees, order as arm.names
+
+
+def reorder(
+    names_in: Sequence[str], values: Sequence[float], names_out: Sequence[str]
+) -> list[float]:
+    """Bring values from one joint order into another."""
+    lookup = dict(zip(names_in, values, strict=True))
+    missing = [n for n in names_out if n not in lookup]
+    if missing:
+        raise KeyError(f"joints missing in the path: {missing}")
+    return [float(lookup[n]) for n in names_out]
