@@ -40,3 +40,14 @@ def test_follow_arrives_on_time(sim_robot: Robot) -> None:
 
 def test_follow_empty(sim_robot: Robot) -> None:
     trajectory.follow(sim_robot.arm, [])
+
+
+def test_follow_cancel(sim_robot: Robot) -> None:
+    calls = {"n": 0}
+
+    def cancelled() -> bool:
+        calls["n"] += 1
+        return calls["n"] > 3
+
+    with pytest.raises(Stopped):
+        trajectory.follow(sim_robot.arm, ramp(5, 2.0), cancelled=cancelled)
