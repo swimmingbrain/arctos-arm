@@ -54,7 +54,7 @@ def follow(
     t0 = time.monotonic()
     log.info("path with %d points, %.1f s", len(points), points[-1].time)
     for i, p in enumerate(points):
-        dt = p.time - prev_t
+        dt = max(p.time - prev_t, MIN_DT)
         arm.move(p.degs, duration=dt, wait=False, start=prev)
         while time.monotonic() - t0 < p.time:
             arm.safety.guard()
