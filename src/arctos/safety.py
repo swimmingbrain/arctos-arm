@@ -56,3 +56,24 @@ class Safety:
     def check_range(name: str, value: float, low: float, high: float) -> None:
         if not low <= value <= high:
             raise LimitError(f"{name}: {value:.1f} is not within {low} to {high}")
+
+
+class EstopInput(threading.Thread):
+    """Polls an input and requests a stop as soon as it reads True."""
+
+    def __init__(
+        self, safety: Safety, read: Callable[[], bool], period: float = 0.05
+    ) -> None:
+        super().__init__(daemon=True, name="estop")
+        self.safety = safety
+        self.read = read
+        self.period = period
+        self._quit = threading.Event()
+
+    def run(self) -> None:
+        while not self._quit.wait(self.period):
+            if self.read() and not self.safety.stopped:
+                self.safety.request_stop("emergency stop")
+
+    def stop(self) -> None:
+        self._quit.set()
