@@ -77,3 +77,17 @@ class EstopInput(threading.Thread):
 
     def stop(self) -> None:
         self._quit.set()
+
+
+def jetson_pin(pin: int, active_low: bool = True) -> Callable[[], bool]:
+    """Reader for a GPIO pin on a Jetson (needs the Jetson.GPIO package)."""
+    import Jetson.GPIO as gpio
+
+    gpio.setmode(gpio.BOARD)
+    gpio.setup(pin, gpio.IN)
+
+    def read() -> bool:
+        level = bool(gpio.input(pin))
+        return (not level) if active_low else level
+
+    return read
