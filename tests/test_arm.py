@@ -112,3 +112,11 @@ def test_sim_calibrate(sim_robot: Robot) -> None:
 
 def test_sim_ping(sim_robot: Robot) -> None:
     assert all(sim_robot.arm.ping().values())
+
+
+def test_sim_move_with_duration(sim_robot: Robot) -> None:
+    arm = sim_robot.arm
+    arm.move([5, 5, 5, 5, 5, 5], duration=0.5, start=[0, 0, 0, 0, 0, 0])
+    for got in arm.positions():
+        assert abs(got - 5) <= arm.tolerance
+    arm.move([5, 5, 5, 5, 5, 5])  # nothing to do, must return at once
