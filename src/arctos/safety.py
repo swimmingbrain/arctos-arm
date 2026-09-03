@@ -72,7 +72,12 @@ class EstopInput(threading.Thread):
 
     def run(self) -> None:
         while not self._quit.wait(self.period):
-            if self.read() and not self.safety.stopped:
+            try:
+                pressed = self.read()
+            except Exception as e:  # noqa: BLE001
+                log.error("cannot read e-stop input: %s", e)
+                continue
+            if pressed and not self.safety.stopped:
                 self.safety.request_stop("emergency stop")
 
     def stop(self) -> None:
