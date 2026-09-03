@@ -27,3 +27,19 @@ def test_check_range() -> None:
     Safety.check_range("x", 10, -20, 20)
     with pytest.raises(LimitError):
         Safety.check_range("x", 21, -20, 20)
+
+
+def test_estop_input_triggers_stop() -> None:
+    s = Safety()
+    pressed = {"value": False}
+    estop = EstopInput(s, lambda: pressed["value"], period=0.01)
+    estop.start()
+    time.sleep(0.05)
+    assert not s.stopped
+    pressed["value"] = True
+    deadline = time.monotonic() + 1.0
+    while not s.stopped and time.monotonic() < deadline:
+        time.sleep(0.01)
+    estop.stop()
+    estop.join(timeout=1.0)
+    assert s.stopped and s.reason == "emergency stop"
