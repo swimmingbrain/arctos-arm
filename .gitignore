@@ -16,6 +16,10 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+# ros 2 workspace leftovers
+install/
+log/
+
 # editors and os
 .idea/
 .vscode/
