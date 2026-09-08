@@ -54,6 +54,7 @@ class ArmNode(Node):
         super().__init__(name)
         self.declare_parameter("config", "")
         self.declare_parameter("sim", False)
+        self.declare_parameter("rate", 10.0)
         cfg = str(self.get_parameter("config").value) or None
         sim = bool(self.get_parameter("sim").value)
         self.robot = self.build_robot(cfg, sim)
@@ -62,11 +63,13 @@ class ArmNode(Node):
         self.group = ReentrantCallbackGroup()
 
         self.pub = self.create_publisher(JointState, "joint_states", 10)
-        self.create_timer(0.1, self.publish, callback_group=self.group)
+        rate = float(self.get_parameter("rate").value)
+        self.create_timer(1.0 / rate, self.publish, callback_group=self.group)
         self.create_subscription(
             JointState, "arctos/joint_cmd", self.on_cmd, 10, callback_group=self.group
         )
         self.create_service(Trigger, "arctos/stop", self.on_stop, callback_group=self.group)
+        self.create_service(Trigger, "arctos/home", self.on_home, callback_group=self.group)
         self.create_service(
             Trigger, "arctos/gripper_open", self.on_open, callback_group=self.group
         )
@@ -210,6 +213,11 @@ class ArmNode(Node):
     def on_stop(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
         self.robot.stop()
         res.success, res.message = True, "stopped"
+        return res
+
+    def on_home(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
+        ok = self.run_in_background(lambda: self.robot.goto("home"), "home")
+        res.success, res.message = ok, "home" if ok else "busy"
         return res
 
     def on_open(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
