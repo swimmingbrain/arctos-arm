@@ -119,6 +119,9 @@ class ArmNode(Node):
     # --- moveit: follow a path ---
 
     def accept_goal(self, _request: FollowJointTrajectory.Goal) -> GoalResponse:
+        if self.busy():
+            self.get_logger().warning("path rejected, a motion is already running")
+            return GoalResponse.REJECT
         return GoalResponse.ACCEPT
 
     def accept_cancel(self, _handle: ServerGoalHandle) -> CancelResponse:
