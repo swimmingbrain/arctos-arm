@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>arctos_moveit_config</name>
+  <version>0.3.0</version>
+  <description>MoveIt 2 configuration and launch files for the Arctos robot arm, using arctos_driver instead of ros2_control</description>
+  <maintainer email="braian.plaku@gmail.com">Braian Plaku</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>moveit_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>shape_msgs</depend>
+
+  <exec_depend>arctos_description</exec_depend>
+  <exec_depend>arctos_driver</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>moveit_configs_utils</exec_depend>
+  <exec_depend>moveit_ros_move_group</exec_depend>
+  <exec_depend>moveit_planners_ompl</exec_depend>
+  <exec_depend>moveit_simple_controller_manager</exec_depend>
+  <exec_depend>moveit_kinematics</exec_depend>
+  <exec_depend>moveit_ros_visualization</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
