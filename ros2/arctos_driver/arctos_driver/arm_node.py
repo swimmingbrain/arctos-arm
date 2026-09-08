@@ -194,3 +194,27 @@ class ArmNode(Node):
         result.reached_goal = True
         handle.succeed()
         return result
+
+    # --- simple commands without moveit ---
+
+    def on_cmd(self, msg: JointState) -> None:
+        target = {
+            SHORT_NAMES.get(n, n): math.degrees(p)
+            for n, p in zip(msg.name, msg.position, strict=True)
+        }
+        self.run_in_background(lambda: self.robot.arm.move(target), f"joints {target}")
+
+    def on_stop(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
+        self.robot.stop()
+        res.success, res.message = True, "stopped"
+        return res
+
+    def on_open(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
+        self.robot.gripper.open(wait=False)
+        res.success, res.message = True, "open"
+        return res
+
+    def on_close(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
+        self.robot.gripper.close(wait=False)
+        res.success, res.message = True, "closed"
+        return res
