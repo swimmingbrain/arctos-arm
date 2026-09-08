@@ -182,3 +182,15 @@ class ArmNode(Node):
         result.error_code = FollowJointTrajectory.Result.SUCCESSFUL
         handle.succeed()
         return result
+
+    def grip(self, handle: ServerGoalHandle) -> GripperCommand.Result:
+        wanted = float(handle.request.command.position)
+        if wanted > JAW_OPEN / 2:
+            self.robot.gripper.open()
+        else:
+            self.robot.gripper.close()
+        result = GripperCommand.Result()
+        result.position = wanted
+        result.reached_goal = True
+        handle.succeed()
+        return result
