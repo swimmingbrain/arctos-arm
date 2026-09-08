@@ -218,3 +218,26 @@ class ArmNode(Node):
         self.robot.gripper.close(wait=False)
         res.success, res.message = True, "closed"
         return res
+
+    # --- internal ---
+
+    def run_in_background(self, fn: Callable[[], object], what: str) -> bool:
+        """Run a motion in a thread so the node keeps answering."""
+        if self.busy():
+            self.get_logger().warning(f"{what}: something is already running")
+            return False
+
+        def job() -> None:
+            with self._moving:
+                self.robot.clear()
+                try:
+                    fn()
+                except Exception as e:  # noqa: BLE001
+                    self.get_logger().error(f"{what}: {e}")
+
+        threading.Thread(target=job, daemon=True).start()
+        return True
+
+    def destroy_node(self) -> bool:
+        self.robot.close()
+        return bool(super().destroy_node())
