@@ -115,3 +115,70 @@ class ArmNode(Node):
         msg.name = self.names + JAWS
         msg.position = [math.radians(d) for d in degs] + [jaw, jaw]
         self.pub.publish(msg)
+
+    # --- moveit: follow a path ---
+
+    def accept_goal(self, _request: FollowJointTrajectory.Goal) -> GoalResponse:
+        return GoalResponse.ACCEPT
+
+    def accept_cancel(self, _handle: ServerGoalHandle) -> CancelResponse:
+        return CancelResponse.ACCEPT
+
+    def follow(self, handle: ServerGoalHandle) -> FollowJointTrajectory.Result:
+        result = FollowJointTrajectory.Result()
+        traj = handle.request.trajectory
+        try:
+            names = [SHORT_NAMES.get(n, n) for n in traj.joint_names]
+            points = [
+                trajectory.Point(
+                    time=p.time_from_start.sec + p.time_from_start.nanosec * 1e-9,
+                    degs=trajectory.reorder(
+                        names,
+                        [math.degrees(v) for v in p.positions],
+                        self.robot.arm.names,
+                    ),
+                )
+                for p in traj.points
+            ]
+        except KeyError as e:
+            result.error_code = FollowJointTrajectory.Result.INVALID_JOINTS
+            result.error_string = str(e)
+            handle.abort()
+            return result
+
+        def feedback(_i: int, p: trajectory.Point) -> None:
+            fb = FollowJointTrajectory.Feedback()
+            fb.joint_names = self.names
+            fb.desired = JointTrajectoryPoint()
+            fb.desired.positions = [math.radians(d) for d in p.degs]
+            handle.publish_feedback(fb)
+
+        with self._moving:
+            self.robot.clear()
+            try:
+                trajectory.follow(
+                    self.robot.arm,
+                    points,
+                    cancelled=lambda: bool(handle.is_cancel_requested),
+                    on_point=feedback,
+                )
+            except Stopped as e:
+                result.error_string = str(e)
+                if handle.is_cancel_requested:
+                    handle.canceled()
+                else:
+                    result.error_code = (
+                        FollowJointTrajectory.Result.PATH_TOLERANCE_VIOLATED
+                    )
+                    handle.abort()
+                return result
+            except Exception as e:  # noqa: BLE001
+                self.get_logger().error(f"path failed: {e}")
+                self.robot.arm.stop()
+                result.error_code = FollowJointTrajectory.Result.PATH_TOLERANCE_VIOLATED
+                result.error_string = str(e)
+                handle.abort()
+                return result
+        result.error_code = FollowJointTrajectory.Result.SUCCESSFUL
+        handle.succeed()
+        return result
