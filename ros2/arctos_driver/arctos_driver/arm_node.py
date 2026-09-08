@@ -241,3 +241,27 @@ class ArmNode(Node):
     def destroy_node(self) -> bool:
         self.robot.close()
         return bool(super().destroy_node())
+
+
+def spin(node: Node) -> None:
+    """Spin a node on a multi threaded executor until ctrl-c."""
+    executor = MultiThreadedExecutor(num_threads=4)
+    executor.add_node(node)
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+
+
+def main() -> None:
+    rclpy.init()
+    try:
+        spin(ArmNode())
+    finally:
+        rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()
