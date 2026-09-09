@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- the robot model comes from arctos_description (urdf and meshes from ros2_arctos),
+     this is only the entry point for moveit and robot_state_publisher -->
+<robot name="arctos" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find arctos_description)/urdf/arctos.xacro" />
+</robot>
