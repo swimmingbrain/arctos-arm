@@ -28,4 +28,29 @@
     </group_state>
 
     <end_effector name="gripper" parent_link="Link_6_1" group="gripper"/>
+
+    <disable_collisions link1="Gripper_1" link2="Left_jaw_1" reason="Adjacent"/>
+    <disable_collisions link1="Gripper_1" link2="Right_jaw_1" reason="Adjacent"/>
+    <disable_collisions link1="Gripper_1" link2="Link_6_1" reason="Adjacent"/>
+    <disable_collisions link1="Gripper_1" link2="Link_5_1" reason="Never"/>
+    <disable_collisions link1="Gripper_1" link2="Link_4_1" reason="Never"/>
+    <disable_collisions link1="Gripper_1" link2="Link_3_1" reason="Never"/>
+    <disable_collisions link1="Left_jaw_1" link2="Right_jaw_1" reason="Never"/>
+    <disable_collisions link1="Left_jaw_1" link2="Link_6_1" reason="Never"/>
+    <disable_collisions link1="Left_jaw_1" link2="Link_5_1" reason="Never"/>
+    <disable_collisions link1="Left_jaw_1" link2="Link_4_1" reason="Never"/>
+    <disable_collisions link1="Left_jaw_1" link2="Link_3_1" reason="Never"/>
+    <disable_collisions link1="Right_jaw_1" link2="Link_6_1" reason="Never"/>
+    <disable_collisions link1="Right_jaw_1" link2="Link_5_1" reason="Never"/>
+    <disable_collisions link1="Right_jaw_1" link2="Link_4_1" reason="Never"/>
+    <disable_collisions link1="Right_jaw_1" link2="Link_3_1" reason="Never"/>
+    <disable_collisions link1="base_link" link2="Link_1_1" reason="Adjacent"/>
+    <disable_collisions link1="Link_1_1" link2="Link_2_1" reason="Adjacent"/>
+    <disable_collisions link1="Link_2_1" link2="Link_3_1" reason="Adjacent"/>
+    <disable_collisions link1="Link_3_1" link2="Link_4_1" reason="Adjacent"/>
+    <disable_collisions link1="Link_3_1" link2="Link_5_1" reason="Never"/>
+    <disable_collisions link1="Link_3_1" link2="Link_6_1" reason="Never"/>
+    <disable_collisions link1="Link_4_1" link2="Link_5_1" reason="Adjacent"/>
+    <disable_collisions link1="Link_4_1" link2="Link_6_1" reason="Never"/>
+    <disable_collisions link1="Link_5_1" link2="Link_6_1" reason="Adjacent"/>
 </robot>
