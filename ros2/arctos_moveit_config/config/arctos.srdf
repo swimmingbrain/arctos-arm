@@ -9,4 +9,23 @@
         <joint name="Left_jaw_joint"/>
         <joint name="Right_jaw_joint"/>
     </group>
+
+    <group_state name="home" group="arm">
+        <joint name="X_joint" value="0"/>
+        <joint name="Y_joint" value="0"/>
+        <joint name="Z_joint" value="0"/>
+        <joint name="A_joint" value="0"/>
+        <joint name="B_joint" value="0"/>
+        <joint name="C_joint" value="0"/>
+    </group_state>
+    <group_state name="open" group="gripper">
+        <joint name="Left_jaw_joint" value="0.015"/>
+        <joint name="Right_jaw_joint" value="0.015"/>
+    </group_state>
+    <group_state name="closed" group="gripper">
+        <joint name="Left_jaw_joint" value="0"/>
+        <joint name="Right_jaw_joint" value="0"/>
+    </group_state>
+
+    <end_effector name="gripper" parent_link="Link_6_1" group="gripper"/>
 </robot>
