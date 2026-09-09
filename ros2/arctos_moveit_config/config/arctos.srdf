@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- semantics for moveit: which joints form the arm, which the gripper,
+     which links may touch. joint names as in arctos_description -->
+<robot name="arctos">
+    <group name="arm">
+        <chain base_link="base_link" tip_link="Link_6_1"/>
+    </group>
+    <group name="gripper">
+        <joint name="Left_jaw_joint"/>
+        <joint name="Right_jaw_joint"/>
+    </group>
+</robot>
