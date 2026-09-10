@@ -11,3 +11,5 @@ joint_limits:
   A_joint: {has_velocity_limits: true, max_velocity: 0.70, has_acceleration_limits: true, max_acceleration: 1.5}
   B_joint: {has_velocity_limits: true, max_velocity: 0.70, has_acceleration_limits: true, max_acceleration: 1.5}
   C_joint: {has_velocity_limits: true, max_velocity: 0.70, has_acceleration_limits: true, max_acceleration: 1.5}
+  Left_jaw_joint: {has_velocity_limits: true, max_velocity: 0.05, has_acceleration_limits: false, max_acceleration: 0}
+  Right_jaw_joint: {has_velocity_limits: true, max_velocity: 0.05, has_acceleration_limits: false, max_acceleration: 0}
