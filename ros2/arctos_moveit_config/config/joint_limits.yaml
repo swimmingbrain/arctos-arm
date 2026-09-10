@@ -1,0 +1,13 @@
+# velocity and acceleration per joint for planning (rad/s, rad/s^2).
+# matches speed in robot.yaml: x 30 deg/s, y z 20, a b c 40.
+# the scaling factors are the defaults in the rviz panel, 1.0 = full values.
+default_velocity_scaling_factor: 0.5
+default_acceleration_scaling_factor: 0.5
+
+joint_limits:
+  X_joint: {has_velocity_limits: true, max_velocity: 0.52, has_acceleration_limits: true, max_acceleration: 1.0}
+  Y_joint: {has_velocity_limits: true, max_velocity: 0.35, has_acceleration_limits: true, max_acceleration: 0.7}
+  Z_joint: {has_velocity_limits: true, max_velocity: 0.35, has_acceleration_limits: true, max_acceleration: 0.7}
+  A_joint: {has_velocity_limits: true, max_velocity: 0.70, has_acceleration_limits: true, max_acceleration: 1.5}
+  B_joint: {has_velocity_limits: true, max_velocity: 0.70, has_acceleration_limits: true, max_acceleration: 1.5}
+  C_joint: {has_velocity_limits: true, max_velocity: 0.70, has_acceleration_limits: true, max_acceleration: 1.5}
