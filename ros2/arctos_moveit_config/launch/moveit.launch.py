@@ -38,3 +38,15 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
         parameters=[moveit_config.robot_description],
     )
+    driver = Node(
+        package=LaunchConfiguration("driver_package"),
+        executable=LaunchConfiguration("driver_executable"),
+        name="arctos_arm",
+        output="screen",
+        parameters=[
+            {
+                "sim": ParameterValue(LaunchConfiguration("sim"), value_type=bool),
+                "config": ParameterValue(LaunchConfiguration("config"), value_type=str),
+            }
+        ],
+    )
