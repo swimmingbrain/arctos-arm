@@ -32,3 +32,39 @@ TIP = "Link_6_1"
 FRAME = "world"
 # tool points straight down: rotation of 90 degrees around x (the -y axis of the flange becomes -z)
 DOWN = Quaternion(x=math.sqrt(0.5), y=0.0, z=0.0, w=math.sqrt(0.5))
+
+
+class MoveItClient(Node):
+    def __init__(self) -> None:
+        super().__init__("arctos_moveit_demo")
+        self.client = ActionClient(self, MoveGroup, "move_action")
+
+    def _send(self, constraints: Constraints) -> bool:
+        if not self.client.wait_for_server(timeout_sec=10.0):
+            self.get_logger().error("move_group not found, is moveit.launch.py running?")
+            return False
+        goal = MoveGroup.Goal()
+        goal.request.group_name = "arm"
+        goal.request.goal_constraints = [constraints]
+        goal.request.allowed_planning_time = 5.0
+        goal.request.num_planning_attempts = 5
+        goal.request.max_velocity_scaling_factor = 0.3
+        goal.request.max_acceleration_scaling_factor = 0.3
+        goal.request.start_state.is_diff = True
+        goal.planning_options.plan_only = False
+        goal.planning_options.replan = False
+
+        future = self.client.send_goal_async(goal)
+        rclpy.spin_until_future_complete(self, future)
+        handle = future.result()
+        if handle is None or not handle.accepted:
+            self.get_logger().error("goal rejected")
+            return False
+        result_future = handle.get_result_async()
+        rclpy.spin_until_future_complete(self, result_future)
+        code = result_future.result().result.error_code.val
+        if code != MoveItErrorCodes.SUCCESS:
+            self.get_logger().error(f"moveit error {code}")
+            return False
+        self.get_logger().info("arrived")
+        return True
