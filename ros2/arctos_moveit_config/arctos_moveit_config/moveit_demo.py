@@ -80,3 +80,30 @@ class MoveItClient(Node):
             jc.weight = 1.0
             c.joint_constraints.append(jc)
         return self._send(c)
+
+    def go_pose(self, xyz: Sequence[float], orientation: Quaternion = DOWN) -> bool:
+        """Flange to x y z (meters, world frame), tool pointing down."""
+        c = Constraints()
+        pc = PositionConstraint()
+        pc.header.frame_id = FRAME
+        pc.link_name = TIP
+        sphere = SolidPrimitive()
+        sphere.type = SolidPrimitive.SPHERE
+        sphere.dimensions = [0.005]
+        pose = Pose()
+        pose.position.x, pose.position.y, pose.position.z = map(float, xyz)
+        pose.orientation.w = 1.0
+        pc.constraint_region.primitives = [sphere]
+        pc.constraint_region.primitive_poses = [pose]
+        pc.weight = 1.0
+        oc = OrientationConstraint()
+        oc.header.frame_id = FRAME
+        oc.link_name = TIP
+        oc.orientation = orientation
+        oc.absolute_x_axis_tolerance = 0.05
+        oc.absolute_y_axis_tolerance = 0.05
+        oc.absolute_z_axis_tolerance = 3.14  # rotation around the vertical does not matter
+        oc.weight = 1.0
+        c.position_constraints.append(pc)
+        c.orientation_constraints.append(oc)
+        return self._send(c)
