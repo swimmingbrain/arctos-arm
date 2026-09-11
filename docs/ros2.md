@@ -55,3 +55,31 @@ echo "source ~/ros2_ws/install/setup.bash" >> ~/.bashrc
 
 With `--symlink-install` a change in a python file only needs a restart of
 the node. New files or changes to `setup.py` need another `colcon build`.
+
+## Launch
+
+Only look at the model and move the joints with sliders, no robot:
+
+```bash
+ros2 launch arctos_description view_robot.launch.py
+```
+
+MoveIt with RViz in the simulation:
+
+```bash
+ros2 launch arctos_moveit_config moveit.launch.py sim:=true
+```
+
+In the MotionPlanning panel drag the marker or pick `home` under Goal State,
+then Plan & Execute. Start with a velocity scaling of 0.2.
+
+On the robot the same without `sim:=true`. Bring the arm up first as in
+[commissioning.md](commissioning.md). Headless (Jetson without a screen):
+`rviz:=false` and start RViz on another computer in the same network with
+the same `ROS_DOMAIN_ID`.
+
+Only the driver node, without MoveIt:
+
+```bash
+ros2 launch arctos_driver arm.launch.py sim:=true
+```
