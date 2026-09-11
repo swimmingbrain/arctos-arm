@@ -107,3 +107,27 @@ class MoveItClient(Node):
         c.position_constraints.append(pc)
         c.orientation_constraints.append(oc)
         return self._send(c)
+
+
+def main() -> None:
+    args = sys.argv[1:]
+    if not args or args[0] not in ("joints", "pose", "home"):
+        print(__doc__)
+        sys.exit(2)
+    rclpy.init()
+    node = MoveItClient()
+    try:
+        if args[0] == "home":
+            ok = node.go_joints([0, 0, 0, 0, 0, 0])
+        elif args[0] == "joints":
+            ok = node.go_joints([float(v) for v in args[1:7]])
+        else:
+            ok = node.go_pose([float(v) for v in args[1:4]])
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+    sys.exit(0 if ok else 1)
+
+
+if __name__ == "__main__":
+    main()
