@@ -18,3 +18,24 @@ drivers run and MoveIt with RViz works without a robot.
 No ros2_control and no C++. The official ros2_arctos goes through
 ros2_control with a C++ hardware interface; if you prefer that route the
 description package is the same.
+
+## Install
+
+ROS 2 Humble (Ubuntu 22.04, JetPack 6) or Jazzy (Ubuntu 24.04). The packages
+are pure Python and work on both, replace `humble` with `jazzy` below.
+
+```bash
+sudo apt install ros-humble-desktop ros-dev-tools
+sudo apt install ros-humble-moveit ros-humble-xacro ros-humble-joint-state-publisher-gui \
+    ros-humble-moveit-configs-utils ros-humble-control-msgs python3-colcon-common-extensions
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+```
+
+The nodes run with the system python because `rclpy` lives there, so the
+library has to be installed there as well:
+
+```bash
+cd ~/arctos-arm
+uv pip install --system -e .          # ubuntu 24.04: add --break-system-packages
+python3 -c "import arctos, can, ikpy; print('ok')"
+```
