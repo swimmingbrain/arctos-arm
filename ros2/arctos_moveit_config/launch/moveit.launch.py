@@ -50,3 +50,38 @@ def generate_launch_description() -> LaunchDescription:
             }
         ],
     )
+    move_group = Node(
+        package="moveit_ros_move_group",
+        executable="move_group",
+        output="screen",
+        parameters=[moveit_config.to_dict()],
+    )
+    rviz = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="log",
+        arguments=["-d", os.path.join(share, "config", "moveit.rviz")],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.robot_description_semantic,
+            moveit_config.robot_description_kinematics,
+            moveit_config.planning_pipelines,
+            moveit_config.joint_limits,
+        ],
+        condition=IfCondition(LaunchConfiguration("rviz")),
+    )
+
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument("sim", default_value="false"),
+            DeclareLaunchArgument("config", default_value=""),
+            DeclareLaunchArgument("rviz", default_value="true"),
+            DeclareLaunchArgument("driver_package", default_value="arctos_driver"),
+            DeclareLaunchArgument("driver_executable", default_value="arm_node"),
+            robot_state_publisher,
+            driver,
+            move_group,
+            rviz,
+        ]
+    )
