@@ -68,3 +68,15 @@ class MoveItClient(Node):
             return False
         self.get_logger().info("arrived")
         return True
+
+    def go_joints(self, degs: Sequence[float]) -> bool:
+        """Joint goal in degrees, order x y z a b c."""
+        c = Constraints()
+        for name, deg in zip(ARM_JOINTS, degs, strict=True):
+            jc = JointConstraint()
+            jc.joint_name = name
+            jc.position = math.radians(deg)
+            jc.tolerance_above = jc.tolerance_below = 0.01
+            jc.weight = 1.0
+            c.joint_constraints.append(jc)
+        return self._send(c)
