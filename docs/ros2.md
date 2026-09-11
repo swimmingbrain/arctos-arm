@@ -39,3 +39,19 @@ cd ~/arctos-arm
 uv pip install --system -e .          # ubuntu 24.04: add --break-system-packages
 python3 -c "import arctos, can, ikpy; print('ok')"
 ```
+
+## Workspace
+
+```bash
+mkdir -p ~/ros2_ws/src
+ln -s ~/arctos-arm/ros2/arctos_description ~/ros2_ws/src/
+ln -s ~/arctos-arm/ros2/arctos_driver ~/ros2_ws/src/
+ln -s ~/arctos-arm/ros2/arctos_moveit_config ~/ros2_ws/src/
+cd ~/ros2_ws
+rosdep install --from-paths src -y --ignore-src
+colcon build --symlink-install
+echo "source ~/ros2_ws/install/setup.bash" >> ~/.bashrc
+```
+
+With `--symlink-install` a change in a python file only needs a restart of
+the node. New files or changes to `setup.py` need another `colcon build`.
