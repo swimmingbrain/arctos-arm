@@ -129,3 +129,15 @@ ros2 run arctos_moveit_config moveit_demo pose 0.10 -0.30 0.10
 `moveit_demo.py` shows how to give MoveIt a goal from Python (the
 `move_action` action with a joint goal or a position with the tool pointing
 down). Use it as the starting point for your own scripts.
+
+## If something does not work
+
+| Symptom | Check first |
+|---|---|
+| `ModuleNotFoundError: arctos` on start | `uv pip install --system -e .`, test with `python3`, not `uv run` |
+| `package 'arctos_description' not found` | workspace built and `source install/setup.bash` done |
+| RViz shows the arm white without meshes | meshes missing in install, run `colcon build` again |
+| MoveIt: "Unable to identify any set of controllers" | node not running, `ros2 action list` has to show the two actions |
+| "Invalid Trajectory: start point deviates" | encoders and model disagree, run `arctos home` and `calibrate`, tolerance is in moveit_controllers.yaml |
+| arm moves differently in RViz than in reality | `invert` or `coupling.matrix`, check with `arctos move` first |
+| path aborts with "did not arrive" | too fast for the motors, lower the velocity scaling or joint_limits.yaml |
