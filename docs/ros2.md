@@ -83,3 +83,25 @@ Only the driver node, without MoveIt:
 ```bash
 ros2 launch arctos_driver arm.launch.py sim:=true
 ```
+
+## Interfaces of arm_node
+
+| Name | Type | Direction |
+|---|---|---|
+| `/joint_states` | sensor_msgs/JointState | out, X_joint .. C_joint plus gripper jaws |
+| `/arm_controller/follow_joint_trajectory` | control_msgs/action/FollowJointTrajectory | in, from MoveIt |
+| `/gripper_controller/gripper_cmd` | control_msgs/action/GripperCommand | in, from MoveIt |
+| `/arctos/joint_cmd` | sensor_msgs/JointState | in, target angles in rad |
+| `/arctos/stop`, `/arctos/home`, `/arctos/gripper_open`, `/arctos/gripper_close` | std_srvs/Trigger | services |
+
+Parameters: `sim` (bool), `config` (path to robot.yaml or its folder), `rate`
+(Hz for joint_states, default 10).
+
+Without MoveIt:
+
+```bash
+ros2 topic pub --once /arctos/joint_cmd sensor_msgs/msg/JointState "{name: [Y_joint], position: [0.5]}"
+ros2 service call /arctos/stop std_srvs/srv/Trigger
+ros2 service call /arctos/gripper_open std_srvs/srv/Trigger
+ros2 topic echo /joint_states
+```
