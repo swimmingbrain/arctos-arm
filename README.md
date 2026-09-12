@@ -7,7 +7,10 @@ closed loop stepper drivers on a CAN bus.
 It talks to the drivers directly over CAN, knows about gear ratios, the wrist
 differential, joint limits and homing offsets, does forward and inverse
 kinematics, and ships a simulation so that everything also runs on a laptop
-without the robot.
+without the robot. On top of that there is a ROS 2 driver node and a MoveIt 2
+configuration, so the arm can be planned and moved from RViz.
+
+No ros2_control, no C++. Plain Python 3.10+.
 
 ## What is in here
 
