@@ -117,3 +117,15 @@ instead of the stock one:
 ```bash
 ros2 launch arctos_moveit_config moveit.launch.py driver_package:=my_pkg driver_executable:=my_node
 ```
+
+## MoveIt from Python
+
+```bash
+ros2 run arctos_moveit_config moveit_demo home
+ros2 run arctos_moveit_config moveit_demo joints 0 30 -20 0 -60 0
+ros2 run arctos_moveit_config moveit_demo pose 0.10 -0.30 0.10
+```
+
+`moveit_demo.py` shows how to give MoveIt a goal from Python (the
+`move_action` action with a joint goal or a position with the tool pointing
+down). Use it as the starting point for your own scripts.
