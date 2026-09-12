@@ -105,3 +105,15 @@ ros2 service call /arctos/stop std_srvs/srv/Trigger
 ros2 service call /arctos/gripper_open std_srvs/srv/Trigger
 ros2 topic echo /joint_states
 ```
+
+## Your own node
+
+`ArmNode` is meant to be subclassed. Override `build_robot()` to return your
+own `Robot` (for example with extra devices on the bus) and `busy()` if you
+run your own motions, then add topics and services in `__init__`. The launch
+file takes `driver_package` and `driver_executable` so MoveIt starts your node
+instead of the stock one:
+
+```bash
+ros2 launch arctos_moveit_config moveit.launch.py driver_package:=my_pkg driver_executable:=my_node
+```
