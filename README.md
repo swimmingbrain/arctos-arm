@@ -21,11 +21,14 @@ No ros2_control, no C++. Plain Python 3.10+.
 | `arctos.motor` | one driver: move, read, home, stop |
 | `arctos.arm` | six joints: ratios, wrist coupling, limits, coordinated moves |
 | `arctos.gripper` | the CAN servo gripper |
-| `arctos.safety` | stop flag, limit check |
+| `arctos.kinematics` | forward and inverse kinematics (ikpy) |
+| `arctos.safety` | stop flag, limit check, emergency stop input |
 | `arctos.sim` | virtual drivers on a virtual bus |
 | `arctos.config` | robot.yaml, poses.yaml, offsets.yaml |
 | `arctos.robot` | builds everything from the config |
-| `arctos.cli` | the `arctos` command |
+| `arctos.trajectory` | follow a timed path (MoveIt) |
+| `arctos.cli` | the `arctos` command, reusable in your own tool |
+| `ros2/` | `arctos_description`, `arctos_driver`, `arctos_moveit_config` |
 
 ## Install
 
