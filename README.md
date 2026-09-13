@@ -128,6 +128,20 @@ Step by step in [docs/commissioning.md](docs/commissioning.md): driver
 settings in Arctos Studio, CAN ids, checking directions, the wrist
 differential, homing and the zero pose.
 
+## ROS 2 and MoveIt 2
+
+`ros2/` holds three packages: `arctos_description` (URDF and meshes),
+`arctos_driver` (a node that publishes joint states and executes
+`FollowJointTrajectory` goals through this library) and `arctos_moveit_config`
+(SRDF, planners, controllers, RViz).
+
+```bash
+ros2 launch arctos_moveit_config moveit.launch.py sim:=true   # MoveIt + RViz without a robot
+ros2 launch arctos_moveit_config moveit.launch.py             # on the robot
+```
+
+Setup, topics and troubleshooting are in [docs/ros2.md](docs/ros2.md).
+
 ## Safety
 
 The emergency stop has to cut the motor power in hardware. In software
