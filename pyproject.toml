@@ -4,7 +4,18 @@ version = "0.1.0"
 description = "Control an Arctos robot arm: MKS servo drivers over CAN, kinematics, simulation, ROS 2"
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Braian Plaku", email = "braian.plaku@gmail.com" }]
 requires-python = ">=3.10"
+keywords = ["arctos", "robot arm", "mks servo42d", "mks servo57d", "can", "ros2", "moveit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
 dependencies = [
     "python-can>=4.4",
     "pyyaml>=6.0",
@@ -12,6 +23,10 @@ dependencies = [
     "ikpy>=3.4",
     "typer>=0.12",
 ]
+
+[project.urls]
+Repository = "https://github.com/swimmingbrain/arctos-arm"
+Issues = "https://github.com/swimmingbrain/arctos-arm/issues"
 
 [project.scripts]
 arctos = "arctos.cli:app"
