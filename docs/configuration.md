@@ -29,3 +29,26 @@ can:
 
 Anything python-can supports works as `interface`. The simulation ignores
 this section and opens a virtual bus.
+
+### joints
+
+One entry per joint, in order from the base to the tool. The names are free,
+the default uses `x y z a b c` like the Arctos docs.
+
+```yaml
+joints:
+  - name: x
+    can_id: 1
+    driver: 57d       # only a note for humans
+    ratio: 13.5       # motor revolutions per joint revolution
+    invert: false     # motor turns the wrong way
+    min: -170         # joint limits in degrees
+    max: 170
+    speed: 30         # default speed in degrees per second
+    acc: 60           # mks acceleration, 1 slow .. 255 fast, 0 instant
+    current: 2000     # working current in mA, written by "arctos setup"
+```
+
+The ratios of the Arctos v2 are 13.5, 150, 150, 48, 67.82, 67.82. Whether a
+motor needs `invert` can only be checked on the assembled robot, see
+[commissioning](commissioning.md).
