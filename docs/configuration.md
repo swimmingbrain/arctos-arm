@@ -52,3 +52,17 @@ joints:
 The ratios of the Arctos v2 are 13.5, 150, 150, 48, 67.82, 67.82. Whether a
 motor needs `invert` can only be checked on the assembled robot, see
 [commissioning](commissioning.md).
+
+### coupling
+
+The Arctos wrist is a differential: both motors move both of the last two
+joints. The matrix maps joint angles to motor angles:
+
+```yaml
+coupling:
+  enabled: true
+  matrix: [[-0.5, 0.5], [0.5, 0.5]]   # [motor_b, motor_c] = matrix * [joint_b, joint_c]
+```
+
+Set `enabled: false` for a wrist without a differential. The matrix is
+always applied to the last two joints in the list.
