@@ -85,3 +85,22 @@ gripper:
 When several joints move together, all of them arrive at the same time: the
 slowest joint (distance divided by its `speed`) sets the duration, the other
 motors get a lower rpm.
+
+### kinematics
+
+The chain for ikpy. Each link is the translation from the previous joint and
+the rotation axis, numbers taken from the URDF.
+
+```yaml
+kinematics:
+  links:
+    - {name: x, xyz: [0.0, 0.0, 0.1126], axis: [0, 0, 1]}
+    - {name: y, xyz: [0.0, -0.020356, 0.175], axis: [1, 0, 0]}
+    # ...
+  tool: [0.0, -0.09, 0.0]   # tool center from the flange
+  tool_axis: [0, -1, 0]     # direction the tool points to
+```
+
+`tool` and `tool_axis` are in the frame of the last joint. `arctos xyz` and
+`kin.ik()` place the tool center at the given point with `tool_axis`
+pointing straight down.
