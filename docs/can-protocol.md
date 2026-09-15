@@ -45,3 +45,13 @@ carry a status byte: `1` ok, `0` failed. Positions are encoder counts,
 The `CR` modes take pulse and direction on the input pins, the `SR` modes
 take commands over CAN. In a `CR` mode the driver still answers to reads,
 which is why `scan` can look fine while nothing moves.
+
+## Notes from the bench
+
+- The driver only answers to the id in the frame, there is no broadcast in
+  the modes above. `stop` is therefore sent to every id.
+- A short gap (1 ms) between two frames avoids lost frames on slcan adapters.
+- `read encoder` returns the accumulated position, it does not wrap at one
+  turn.
+- The speed byte pair in `move` is unsigned, the direction is the sign of the
+  target. In `speed mode` the direction is bit 7 of the first data byte.
