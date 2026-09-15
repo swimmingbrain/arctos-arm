@@ -126,3 +126,10 @@ The joint angle that corresponds to driver position 0, per joint. Created
 by `arctos calibrate` and read on every start. Do not edit by hand, run
 `calibrate` again instead. Add it to `.gitignore` if the offsets differ
 between robots.
+
+## Extra sections
+
+Your own project can put more sections into the same file. The library only
+reads the ones above and `robot.settings.section("name")` returns any other
+section as a dict. Every `can_id` found anywhere in the file gets a fake
+driver in the simulation, so an extra motor on the bus is simulated too.
