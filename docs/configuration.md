@@ -66,3 +66,22 @@ coupling:
 
 Set `enabled: false` for a wrist without a differential. The matrix is
 always applied to the last two joints in the list.
+
+### motion, gripper
+
+```yaml
+motion:
+  tolerance: 0.5     # degrees, from where a joint counts as arrived
+  max_rpm: 1500      # never send more than this to a driver
+  min_rpm: 5
+
+gripper:
+  can_id: 7
+  open: 99           # servo value for open
+  close: 0
+  settle: 1.0        # seconds to wait after a command
+```
+
+When several joints move together, all of them arrive at the same time: the
+slowest joint (distance divided by its `speed`) sets the duration, the other
+motors get a lower rpm.
