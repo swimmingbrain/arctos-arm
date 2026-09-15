@@ -92,12 +92,12 @@ class Robot:
 
 
 def build(
-    path: str | Path | None = None,
+    path: str | Path | config.Settings | None = None,
     sim: bool = False,
     speedup: float = 1.0,
 ) -> Robot:
     """Create everything and open the bus."""
-    settings = config.load(path)
+    settings = path if isinstance(path, config.Settings) else config.load(path)
     cfg = settings.robot
     safety = Safety()
 
