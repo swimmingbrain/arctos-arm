@@ -104,3 +104,25 @@ kinematics:
 `tool` and `tool_axis` are in the frame of the last joint. `arctos xyz` and
 `kin.ik()` place the tool center at the given point with `tool_axis`
 pointing straight down.
+
+## poses.yaml
+
+```yaml
+home: [0, 0, 0, 0, 0, 0]
+pick: [60, 40, -20, 0, -70, 0]
+```
+
+Joint angles in degrees, same order as the joints. `arctos teach name` adds
+the current position, `arctos pose name` moves there.
+
+## offsets.yaml
+
+```yaml
+x: -55.0
+y: 0.0
+```
+
+The joint angle that corresponds to driver position 0, per joint. Created
+by `arctos calibrate` and read on every start. Do not edit by hand, run
+`calibrate` again instead. Add it to `.gitignore` if the offsets differ
+between robots.
