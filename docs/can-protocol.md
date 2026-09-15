@@ -30,3 +30,18 @@ carry a status byte: `1` ok, `0` failed. Positions are encoder counts,
 | 0xF4 | move relative | uint16 rpm, uint8 acc, int24 counts | as above |
 | 0xF6 | speed mode | dir bit + 12 bit rpm, uint8 acc | status |
 | 0xF7 | stop | - | status |
+
+## Work modes
+
+| Value | Mode | CAN motion commands |
+|---|---|---|
+| 0 | CR_OPEN | no |
+| 1 | CR_CLOSE | no |
+| 2 | CR_vFOC | no (factory default) |
+| 3 | SR_OPEN | yes |
+| 4 | SR_CLOSE | yes |
+| 5 | SR_vFOC | yes, this is what the library expects |
+
+The `CR` modes take pulse and direction on the input pins, the `SR` modes
+take commands over CAN. In a `CR` mode the driver still answers to reads,
+which is why `scan` can look fine while nothing moves.
