@@ -77,3 +77,10 @@ def test_set_commands() -> None:
         0,
     ]
     assert mks.enable(False) == [0xF3, 0]
+
+
+def test_int24_out_of_range() -> None:
+    with pytest.raises(ValueError):
+        mks.to_int24(1 << 23)
+    with pytest.raises(ValueError):
+        mks.to_uint16(70000)
