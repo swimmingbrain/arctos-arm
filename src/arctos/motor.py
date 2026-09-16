@@ -45,6 +45,9 @@ class Motor:
         rx = self._ask(mks.query_status())
         return mks.parse_status(rx)
 
+    def is_moving(self) -> bool:
+        return self.status() in (2, 3, 4)
+
     def counts(self) -> int:
         """Accumulated encoder position."""
         return mks.parse_encoder(self._ask(mks.read_encoder()))
