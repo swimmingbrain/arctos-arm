@@ -163,7 +163,22 @@ uv run mypy src
 
 ## License
 
-MIT. The robot model in `ros2/arctos_description` comes from
-[ros2_arctos](https://github.com/cr0Kz/ros2_arctos) and is Apache 2.0, see
-the license file in that folder. The CAN protocol follows the MKS SERVO42D/57D
-manual from [makerbase-motor](https://github.com/makerbase-motor).
+The code in this repository is MIT licensed, see [LICENSE](LICENSE).
+
+Third-party material, also listed in [NOTICE](NOTICE):
+
+- `ros2/arctos_description` is taken from
+  [ros2_arctos](https://github.com/cr0Kz/ros2_arctos), the official ROS 2
+  package for the arm, Apache License 2.0. The folder keeps its license file
+  and [ORIGIN.md](ros2/arctos_description/ORIGIN.md) lists the changes.
+- The STL meshes in that folder are the visualisation meshes of the arm
+  designed by [Arctos Robotics](https://arctosrobotics.com), exactly as
+  published in ros2_arctos. The CAD files Arctos Robotics sells are not
+  included.
+- The CAN protocol in `arctos.mks` was written from the public MKS
+  SERVO42D/57D CAN user manual by [Makerbase](https://github.com/makerbase-motor).
+  No Makerbase code is included.
+
+This is an independent community project. It is not affiliated with, endorsed
+by or supported by Arctos Robotics or Makerbase. "Arctos" is a name of Arctos
+Robotics and is used here only to say which robot the software works with.
