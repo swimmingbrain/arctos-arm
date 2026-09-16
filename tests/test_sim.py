@@ -25,3 +25,9 @@ def test_can_ids_walks_the_config() -> None:
         "extra": {"nested": [{"can_id": 12}], "can_id": "not a number"},
     }
     assert sim.can_ids(cfg) == [1, 2, 7, 12]
+
+
+def test_simulation_skips_gripper_id(sim_robot: Robot) -> None:
+    assert sim_robot.sim is not None
+    assert sorted(sim_robot.sim.drivers) == [1, 2, 3, 4, 5, 6]
+    assert sim_robot.sim.gripper.can_id == 7
