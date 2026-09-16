@@ -1,6 +1,6 @@
 [project]
 name = "arctos-arm"
-version = "0.2.0"
+version = "0.3.0"
 description = "Control an Arctos robot arm: MKS servo drivers over CAN, kinematics, simulation, ROS 2"
 readme = "README.md"
 license = "MIT"
