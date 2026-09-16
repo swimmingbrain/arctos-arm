@@ -1,0 +1,29 @@
+arctos-arm
+Copyright (c) 2026 Braian Plaku
+
+The code in this repository is licensed under the MIT License, see LICENSE.
+
+This is an independent community project. It is not affiliated with,
+endorsed by or supported by Arctos Robotics or Makerbase. "Arctos" is a name
+of Arctos Robotics and is used here only to say which robot the software
+works with.
+
+Third-party material included in this repository:
+
+1. ros2/arctos_description
+   Taken from ros2_arctos (https://github.com/cr0Kz/ros2_arctos), the official
+   ROS 2 package for the Arctos arm, licensed under the Apache License,
+   Version 2.0. The license text is kept in ros2/arctos_description/LICENSE.
+   Changes made to the copied files are listed in
+   ros2/arctos_description/ORIGIN.md.
+
+2. ros2/arctos_description/meshes/*.stl
+   Visualisation meshes of the Arctos robot arm, designed by Arctos Robotics
+   (https://arctosrobotics.com). They are the files published in ros2_arctos
+   under the Apache License 2.0 and are included unchanged. The full CAD
+   files that Arctos Robotics sells are not part of this repository.
+
+3. src/arctos/mks.py, docs/can-protocol.md
+   Implemented from the publicly available "MKS SERVO42D/57D CAN User Manual"
+   by Makerbase (https://github.com/makerbase-motor). No Makerbase code is
+   included.
