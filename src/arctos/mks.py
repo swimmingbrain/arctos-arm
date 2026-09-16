@@ -23,7 +23,8 @@ READ_PROTECTION = 0x3E
 
 # settings
 CALIBRATE = 0x80
-SET_WORK_MODE = 0x82  # 0 cr_open, 1 cr_close, 2 cr_vfoc, 3 sr_open, 4 sr_close, 5 sr_vfoc
+# modes: 0 cr_open, 1 cr_close, 2 cr_vfoc, 3 sr_open, 4 sr_close, 5 sr_vfoc
+SET_WORK_MODE = 0x82
 SET_CURRENT = 0x83  # mA, uint16
 SET_MICROSTEP = 0x84
 SET_DIRECTION = 0x86
