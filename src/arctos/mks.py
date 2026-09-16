@@ -71,6 +71,9 @@ def check(can_id: int, data: list[int]) -> bool:
 
 def to_int24(value: int) -> list[int]:
     """Signed 24 bit number, most significant byte first."""
+    lo, hi = -(1 << 23), (1 << 23) - 1
+    if not lo <= value <= hi:
+        raise ValueError(f"value {value} does not fit in 24 bit")
     v = value & 0xFFFFFF
     return [(v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF]
 
