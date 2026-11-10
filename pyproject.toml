@@ -18,6 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "python-can>=4.4",
+    "pyserial>=3.5",
     "pyyaml>=6.0",
     "numpy>=1.26",
     "ikpy>=3.4",
